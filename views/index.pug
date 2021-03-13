@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  form(action="/users/register" method="POST")
+    label(for="userName") user name 
+    input(type="text" name="userName")
+    label(for="password") password  
+    input(type="password" name="password")
+    label(for="email") email  
+    input(type="email" name="email") 
+    label(for="userAge") user age 
+    input(type="number" name="userAge")
+    button submmit 
