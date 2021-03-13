@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
     res.redirect('/secret')
   }).catch((err) => {
     console.log(`this is an error ${err}`);
-    throw err;
+    res.send(err)
   })
 });
 router.post('/login', async (req, res) => {
