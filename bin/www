@@ -4,36 +4,22 @@
  * Module dependencies.
  */
 
-<<<<<<< HEAD
-var app = require('../app');
-var debug = require('debug')('server:server');
-var http = require('http');
-=======
 const app = require('../app');
 const debug = require('debug')('server:server');
 const http = require('http');
->>>>>>> 6d8f3883f7fd22b867455ad95651ae70141c7a38
 
 /**
  * Get port from environment and store in Express.
  */
 
-<<<<<<< HEAD
-var port = normalizePort(process.env.PORT || '3000');
-=======
 const port = normalizePort(process.env.PORT || '3000');
->>>>>>> 6d8f3883f7fd22b867455ad95651ae70141c7a38
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-<<<<<<< HEAD
-var server = http.createServer(app);
-=======
 const server = http.createServer(app);
->>>>>>> 6d8f3883f7fd22b867455ad95651ae70141c7a38
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -48,11 +34,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-<<<<<<< HEAD
-  var port = parseInt(val, 10);
-=======
   const port = parseInt(val, 10);
->>>>>>> 6d8f3883f7fd22b867455ad95651ae70141c7a38
 
   if (isNaN(port)) {
     // named pipe
@@ -76,11 +58,7 @@ function onError(error) {
     throw error;
   }
 
-<<<<<<< HEAD
-  var bind = typeof port === 'string'
-=======
   const bind = typeof port === 'string'
->>>>>>> 6d8f3883f7fd22b867455ad95651ae70141c7a38
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -104,13 +82,8 @@ function onError(error) {
  */
 
 function onListening() {
-<<<<<<< HEAD
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-=======
   const addr = server.address();
   const bind = typeof addr === 'string'
->>>>>>> 6d8f3883f7fd22b867455ad95651ae70141c7a38
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
