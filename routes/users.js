@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
   })
   await user.save().then(() => {
     req.session.user_id = user._id
-    res.redirect('/secret')
+    res.send('succes')
   }).catch((err) => {
     console.log(`this is an error ${err}`);
     res.send(err)
@@ -38,7 +38,6 @@ router.post('/login', async (req, res) => {
   const userAuth = await User.authUser(userName, password)
   if (userAuth) {
     req.session.user_id = userAuth._id
-    res.redirect('/secret')
   } else(
     res.send({
       status: -1
