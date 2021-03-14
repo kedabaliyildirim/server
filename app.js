@@ -39,12 +39,6 @@ app.use('/users', usersRoot);
 app.use('/', index)
 
 //VIEWS
-app.get('/secret', reqLogIn, (reqLogIn, res) => {
-  res.render('secret')
-})
-app.get('/login', (reqLogIn, res) => {
-  res.render('login')
-})
 
 
 
