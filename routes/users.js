@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
   })
   await user.save().then(() => {
     req.session.user_id = user._id
-    res.send('succes')
+    res.send('success')
   }).catch((err) => {
     console.log(`this is an error ${err}`);
     res.send(err)
