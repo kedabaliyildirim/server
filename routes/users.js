@@ -1,6 +1,6 @@
 const User = require('../models/userSchema.js')
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors');
 const bcrypt = require('bcrypt')
 const {
   log
@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
     title: 'Express'
   });
 });
-router.use(cors())
+// router.use(cors())
 router.post('/register', async (req, res) => {
 
   const {
