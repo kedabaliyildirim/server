@@ -8,7 +8,7 @@ const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 router.use(cors({
   credentials: true,
-  origin: url
+  origin: { url, localUrl }
 }))
 const {
   log
