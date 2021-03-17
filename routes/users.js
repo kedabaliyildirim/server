@@ -3,19 +3,16 @@ const router = express.Router();
 const User = require('../models/userSchema.js')
 const bcrypt = require('bcrypt')
 const cors = require('cors');
-const reqLogIn = require('../helpers/auth')
+
 const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 router.use(cors({
   credentials: true,
-  origin: { url, localUrl }
+  origin: {
+    url,
+    localUrl
+  }
 }))
-const {
-  log
-} = require('debug');
-const {
-  Logger
-} = require('mongodb');
 router.get('/', function (req, res, next) {
   res.render('index', {
     title: 'Express'
@@ -23,7 +20,8 @@ router.get('/', function (req, res, next) {
 });
 router.post('/checkauth', async (req, res) => {
   if (!req.session.user_id) {
-    res.send('error')
+    console.log('error');
+    res.send('authError')
   } else {
     res.send('success')
   }

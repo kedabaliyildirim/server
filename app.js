@@ -4,10 +4,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const usersRoot = require('./routes/users.js')
+const dotenv = require('dotenv')
+dotenv.config({
+  path: './.env'
+})
 const url = require('url')
 //ENVIORMENT VERIABLES
-const dotenv = require('dotenv')
-dotenv.config()
 //LOGIN AUTHENTICATION FUNCTION
 //SESSION
 const redis = require('redis')
@@ -18,7 +20,7 @@ if (process.env.REDISCLOUD_URL) {
   redisClient = redis.createClient({
     port: process.env.REDIS_PORT,
     host: process.env.REDISCLOUD_URL,
-    password:process.env.REDIS_PASSWORD
+    password: process.env.REDIS_PASSWORD
   })
 } else {
   redisClient = redis.createClient
@@ -37,7 +39,9 @@ app.use(require('express-session')({
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
   },
-  store: new redisStore({client:redisClient}),
+  store: new redisStore({
+    client: redisClient
+  }),
   resave: false,
   saveUninitialized: false
 }))
