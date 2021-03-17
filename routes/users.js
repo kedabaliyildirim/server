@@ -6,11 +6,16 @@ const cors = require('cors');
 const reqLogIn = require('../helpers/auth')
 const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
-router.use(cors({credentials:true,origin:url}))
+router.use(cors({
+  credentials: true,
+  origin: url
+}))
 const {
   log
 } = require('debug');
-const { Logger } = require('mongodb');
+const {
+  Logger
+} = require('mongodb');
 router.get('/', function (req, res, next) {
   res.render('index', {
     title: 'Express'

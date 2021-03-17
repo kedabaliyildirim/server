@@ -10,6 +10,7 @@
     "bcrypt": "^5.0.1",
     "connect-redis": "^5.1.0",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "ejs": "~2.6.1",
@@ -21,8 +22,9 @@
     "nodemon": "^2.0.7",
     "pug": "^3.0.2",
     "redis": "^3.0.2",
+    "redis-cli": "^2.0.0",
     "redis-commander": "^0.7.0",
-    "cors": "^2.8.5"
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "eslint": "^7.21.0"

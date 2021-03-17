@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const { log } = require('debug')
+const {
+    log
+} = require('debug')
 const userSchema = mongoose.Schema({
     userName: {
         type: String,
@@ -34,16 +36,16 @@ const userSchema = mongoose.Schema({
     }
 })
 userSchema.statics.authUser = async function (userName, password) {
-        const findUser = await this.findOne({
-            userName
-        })
+    const findUser = await this.findOne({
+        userName
+    })
     if (findUser) {
         const authourise = await bcrypt.compare(password, findUser.password)
         return authourise ? findUser : false
     } else {
         return false
-}
-    
+    }
+
 }
 try {
     userSchema.pre('save', async function (next) {
