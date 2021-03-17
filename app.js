@@ -13,7 +13,6 @@ const redis = require('redis')
 const session = require('express-session')
 let redisStore = require('connect-redis')(session)
 let redisClient = redis.createClient()
-const MongoStore = require('connect-mongo')
 const app = express();
 //DATABASE
 const dataBase = require('./helpers/db.js')
