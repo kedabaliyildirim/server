@@ -1,17 +1,27 @@
-const User = require('../models/userSchema.js')
 const express = require('express');
-// const cors = require('cors');
+const router = express.Router();
+const User = require('../models/userSchema.js')
 const bcrypt = require('bcrypt')
+const cors = require('cors');
+const reqLogIn = require('../helpers/auth')
+const localUrl = 'http://localhost:8080'
+router.use(cors({credentials:true,origin:localUrl}))
 const {
   log
 } = require('debug');
-const router = express.Router();
+const { Logger } = require('mongodb');
 router.get('/', function (req, res, next) {
   res.render('index', {
     title: 'Express'
   });
 });
-// router.use(cors())
+router.post('/checkauth', async (req, res) => {
+  if (!req.session.user_id) {
+    res.send('error')
+  } else {
+    res.send('success')
+  }
+})
 router.post('/register', async (req, res) => {
 
   const {
@@ -81,7 +91,9 @@ router.post('/login', async (req, res) => {
   currUser = await find
   await bcrypt.compare(password, currUser.password).then((data) => {
     if (data) {
+      console.log(data);
       req.session.user_id = currUser._id
+      console.log(`Setted req.session id to ${req.session.user_id}`);
       res.send(currUser._id)
     } else(
       res.send('error')
@@ -91,7 +103,9 @@ router.post('/login', async (req, res) => {
   })
 })
 router.post('/logout', (req, res) => {
+  console.log(`this is logout`);
+  console.log(req.session.user_id);
   req.session.user_id = null
-  res.redirect('/login')
+  res.send('success')
 })
 module.exports = router;

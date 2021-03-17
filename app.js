@@ -8,23 +8,33 @@ const usersRoot = require('./routes/users.js')
 const dotenv = require('dotenv')
 dotenv.config()
 //LOGIN AUTHENTICATION FUNCTION
-const reqLogIn = require('./helpers/auth')
 //SESSION
+const redis = require('redis')
 const session = require('express-session')
+let redisStore = require('connect-redis')(session)
+let redisClient = redis.createClient()
+const MongoStore = require('connect-mongo')
 const app = express();
 //DATABASE
 const dataBase = require('./helpers/db.js')
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 //USING SESSION SECRETS
-app.use(session({
+app.use(require('express-session')({
   secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: false,
+  },
+  store: new redisStore({client:redisClient}),
+  resave: false,
+  saveUninitialized: false
 }))
+
+
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
@@ -41,7 +51,7 @@ app.use('/users', usersRoot);
 
 
 // catch 404 and forward to error handler NO RENDERS AFTER THIS POINT
-app.use((reqLogIn, res, next) => {
+app.use((res, next) => {
   next(createError(404));
 });
 // error handler
