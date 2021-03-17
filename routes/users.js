@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt')
 const cors = require('cors');
 const reqLogIn = require('../helpers/auth')
 const localUrl = 'http://localhost:8080'
-router.use(cors({credentials:true,origin:localUrl}))
+const url = 'https://vue-test-47cc0.web.app'
+router.use(cors({credentials:true,origin:url}))
 const {
   log
 } = require('debug');

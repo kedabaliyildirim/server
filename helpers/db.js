@@ -4,7 +4,7 @@ mongoose.connect(process.env.DB_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     createIndexes: true
-}).then((data) => {
+}).then(() => {
     console.log('MONGOD HAS ARRISEN');
 }).catch((err) => {
     console.log(err);
