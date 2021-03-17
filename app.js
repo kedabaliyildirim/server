@@ -3,7 +3,6 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const usersRoot = require('./routes/users.js')
 const dotenv = require('dotenv')
 dotenv.config({
   path: './.env'
@@ -57,6 +56,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //ROUTES
+const usersRoot = require('./routes/users.js')
 app.use('/users', usersRoot);
 
 //VIEWS
