@@ -18,15 +18,7 @@ router.get('/', function (req, res, next) {
     title: 'Express'
   });
 });
-router.post('/checkauth', async (req, res) => {
-  console.log(req.session.isLogged);
-  if (req.session.isLogged) {
-    res.send('success')
-  }
-  else {
-    res.send('error')
-  }
-})
+
 router.post('/register', async (req, res) => {
 
   const {
@@ -114,5 +106,13 @@ router.post('/logout', (req, res) => {
   console.log(req.session.user_id);
   req.session.user_id = null
   res.send('success')
+})
+router.post('/checkauth', async (req, res) => {
+  console.log(req.session.isLogged);
+  if (req.session.isLogged) {
+    res.send('success')
+  } else {
+    res.send('error')
+  }
 })
 module.exports = router;
