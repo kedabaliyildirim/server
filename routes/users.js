@@ -52,7 +52,7 @@ router.post('/register', async (req, res) => {
 
           User.findOneAndDelete({
             userName: userName
-          }).then(() => console.log('deleted a user')).catch(err => console.log(err))
+          }).then(() => console.log('deleted a user')).catch(err => console.log(`this is register err ${err}`))
         } else {
           return
         }
@@ -88,7 +88,7 @@ router.post('/login', async (req, res) => {
   const currUser = await find
   await bcrypt.compare(password, currUser.password).then((data) => {
     if (data) {
-      console.log(data);
+      console.log(`this is login data ${data}`);
       req.session.isLogged = true
       req.session.user_id = currUser._id
       console.log(`Setted req.session id to ${req.session.user_id}`);
@@ -98,17 +98,17 @@ router.post('/login', async (req, res) => {
       )
     }).catch((err) => {
     res.send('error')
-    console.log(err);
+    console.log(`this is login err : ${err}`);
   })
 })
 router.post('/logout', (req, res) => {
   console.log(`this is logout`);
-  console.log(req.session.user_id);
+  console.log(`this is logout reqss: ${req.session.user_id}`);
   req.session.user_id = null
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
-  console.log(req.session.isLogged);
+  console.log(`this is reqses:${req.session.isLogged}`);
   if (req.session.isLogged) {
     res.send('success')
   } else {
