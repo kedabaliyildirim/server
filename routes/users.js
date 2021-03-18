@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/userSchema.js')
 const bcrypt = require('bcrypt')
 const cors = require('cors');
-
+const session = require('express-session')
 // const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 router.use(cors({
@@ -19,6 +19,7 @@ router.get('/', function (req, res, ) {
   });
 });
 router.get('/checkauth', async (req, res) => {
+  console.log(req.session.key);
   console.log(req.session);
   if (!req.session.key) {
     console.log('error');
@@ -98,7 +99,7 @@ router.post('/login', async (req, res) => {
     if (data) {
       console.log(data);
       req.session.key = currUser._id
-      req.session.save();
+      session.save();
       console.log(`Setted req.session id to ${req.session.key}`);
       res.send(currUser._id)
     } else(
