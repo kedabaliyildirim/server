@@ -20,8 +20,8 @@ router.get('/', function (req, res, next) {
   });
 });
 router.post('/checkauth', async (req, res) => {
-  console.log(req.session.user_id);
-  if (!req.session.user_id) {
+  console.log(req.session.key);
+  if (!req.session.key) {
     console.log('error');
     res.send('authError')
   } else {
@@ -48,7 +48,7 @@ router.post('/register', async (req, res) => {
     })
     let forceCheck = 0
     await user.save().then((data) => {
-      req.session.user_id = user._id
+      req.session.key = user._id
       console.log(`this is user ID : ${user._id}`);
       res.send(data)
     }).catch((err) => {
@@ -76,7 +76,7 @@ router.post('/register', async (req, res) => {
       chat
     })
     await user.save().then(() => {
-      req.session.user_id = user._id
+      req.session.key = user._id
       console.log(`this is user ID : ${user._id}`);
       res.send(user._id)
     }).catch((err) => {
@@ -98,8 +98,8 @@ router.post('/login', async (req, res) => {
   await bcrypt.compare(password, currUser.password).then((data) => {
     if (data) {
       console.log(data);
-      req.session.user_id = currUser._id
-      console.log(`Setted req.session id to ${req.session.user_id}`);
+      req.session.key = currUser._id
+      console.log(`Setted req.session id to ${req.session.key}`);
       res.send(currUser._id)
     } else(
       res.send('error')
@@ -110,8 +110,8 @@ router.post('/login', async (req, res) => {
 })
 router.post('/logout', (req, res) => {
   console.log(`this is logout`);
-  console.log(req.session.user_id);
-  req.session.user_id = null
+  console.log(req.session.key);
+  req.session.key = null
   res.send('success')
 })
 module.exports = router;
