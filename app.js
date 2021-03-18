@@ -3,12 +3,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+//ENVIORMENT VERIABLES
 const dotenv = require('dotenv')
 dotenv.config({
   path: './.env'
 })
-const url = require('url')
-//ENVIORMENT VERIABLES
 //LOGIN AUTHENTICATION FUNCTION
 //SESSION
 const redis = require('redis')
@@ -68,7 +67,7 @@ app.use((res, next) => {
   next(createError(404));
 });
 // error handler
-app.use((err, reqLogIn, res, next) => {
+app.use((err, reqLogIn, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = reqLogIn.app.get('env') === 'development' ? err : {};
