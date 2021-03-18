@@ -18,7 +18,7 @@ router.get('/', function (req, res, ) {
     title: 'Express'
   });
 });
-router.post('/checkauth', async (req, res) => {
+router.get('/checkauth', async (req, res) => {
   console.log(req.session);
   if (!req.session.key) {
     console.log('error');
