@@ -98,6 +98,7 @@ router.post('/login', async (req, res) => {
     if (data) {
       console.log(data);
       req.session.key = currUser._id
+      req.session.save();
       console.log(`Setted req.session id to ${req.session.key}`);
       res.send(currUser._id)
     } else(
