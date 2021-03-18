@@ -40,8 +40,8 @@ app.use(require('express-session')({
   store: new redisStore({
     client: redisClient
   }),
-  resave: false,
-  saveUninitialized: false
+  resave: true,
+  saveUninitialized: true
 }))
 
 
