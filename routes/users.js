@@ -89,11 +89,11 @@ router.post('/login', async (req, res) => {
   await bcrypt.compare(password, currUser.password).then(async (data) => {
     if (data) {
       console.log(`this is login data ${data}`);
-      await req.session.save(() => {
+      await req.session.save(async () => {
         req.session.isLogged = true
         req.session.user_id = currUser._id
         console.log(`Setted req.session id to ${req.session.user_id}`);
-        res.send(currUser._id)
+        await res.send(currUser._id)
       })
     } else (
       await req.session.save(() => {
@@ -113,7 +113,6 @@ router.post('/logout', (req, res) => {
 })
 router.post('/checkauth', async (req, res) => {
   await req.session.reload(() => {
-    console.log(`this ise req.session of checkAuth : ${JSON.stringify(req.session)}`);
     if (req.session.isLogged) {
       res.send('success')
     } else {
