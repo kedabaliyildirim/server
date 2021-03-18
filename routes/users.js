@@ -86,14 +86,15 @@ router.post('/login', async (req, res) => {
     userName
   })
   const currUser = await find
-  await bcrypt.compare(password, currUser.password).then((data) => {
+  await bcrypt.compare(password, currUser.password).then(async (data) => {
     if (data) {
       console.log(`this is login data ${data}`);
-      req.session.isLogged = true
-      req.session.save()
-      req.session.user_id = currUser._id
-      console.log(`Setted req.session id to ${req.session.user_id}`);
-      res.send(currUser._id)
+      await req.session.save(() => {
+        req.session.isLogged = true
+        req.session.user_id = currUser._id
+        console.log(`Setted req.session id to ${req.session.user_id}`);
+        res.send(currUser._id)
+      })
     } else (
       req.session.isLogged = false
       )
