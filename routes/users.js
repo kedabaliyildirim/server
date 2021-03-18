@@ -96,7 +96,9 @@ router.post('/login', async (req, res) => {
         res.send(currUser._id)
       })
     } else (
-      req.session.isLogged = false
+      await req.session.save(() => {
+        req.session.isLogged = false
+      }) 
       )
     }).catch((err) => {
     res.send('error')
@@ -110,11 +112,12 @@ router.post('/logout', (req, res) => {
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
-  console.log(`this is reqses:${req.session.isLogged}`);
-  if (req.session.isLogged) {
-    res.send('success')
-  } else {
-    res.send('error')
-  }
+  await req.session.reload(() => {
+    if (req.session.isLogged) {
+      res.send('success')
+    } else {
+      res.send('error')
+    }
+})
 })
 module.exports = router;
