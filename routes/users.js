@@ -18,9 +18,14 @@ router.get('/', function (req, res, next) {
     title: 'Express'
   });
 });
-router.post('/checkauth', reqLogIn, async (req, res) => {
-  console.log(req.session.user_id);
-  res.send('success')
+router.post('/checkauth', async (req, res) => {
+  console.log(req.session.isLogged);
+  if (req.session.isLogged) {
+    res.send('success')
+  }
+  else {
+    res.send('error')
+  }
 })
 router.post('/register', async (req, res) => {
 
@@ -92,13 +97,15 @@ router.post('/login', async (req, res) => {
   await bcrypt.compare(password, currUser.password).then((data) => {
     if (data) {
       console.log(data);
+      req.session.isLogged = true
       req.session.user_id = currUser._id
       console.log(`Setted req.session id to ${req.session.user_id}`);
       res.send(currUser._id)
-    } else(
-      res.send('error')
-    )
-  }).catch((err) => {
+    } else (
+      req.session.isLogged = false
+      )
+    }).catch((err) => {
+    res.send('error')
     console.log(err);
   })
 })
