@@ -94,7 +94,7 @@ router.post('/login', async (req, res) => {
   const find = await User.findOne({
     userName
   })
-  currUser = await find
+  const currUser = await find
   await bcrypt.compare(password, currUser.password).then((data) => {
     if (data) {
       console.log(data);
