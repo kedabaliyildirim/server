@@ -4,13 +4,13 @@ const User = require('../models/userSchema.js')
 const bcrypt = require('bcrypt')
 const cors = require('cors');
 const reqLogIn = require('../helpers/auth.js') 
-const localUrl = 'http://localhost:8080'
+// const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 router.use(cors({
   credentials: true,
   origin: {
     url,
-    localUrl
+    // localUrl
   }
 }))
 router.get('/', function (req, res, next) {
@@ -112,15 +112,12 @@ router.post('/logout', (req, res) => {
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
-  await req.session.cookie(() => {
-    console.log(req.session);
+  await req.session.save(() => {
     if (req.session.isLogged) {
       res.send('success')
     } else {
       res.send('error')
     }
-  }).catch((err) => {
-  console.log('error');
 })
 })
 module.exports = router;
