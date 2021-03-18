@@ -112,7 +112,7 @@ router.post('/logout', (req, res) => {
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
-  await req.session.regenerate(() => {
+  await req.session.touch(() => {
     if (req.session.isLogged) {
       res.send('success')
     } else {
