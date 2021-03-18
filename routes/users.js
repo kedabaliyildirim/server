@@ -113,7 +113,7 @@ router.post('/logout', (req, res) => {
 })
 router.post('/checkauth', async (req, res) => {
   await req.session.reload(() => {
-    console.log(`this ise req.session of checkAuth : ${req.session});
+    console.log(`this ise req.session of checkAuth : ${req.session}`);
     if (req.session.isLogged) {
       res.send('success')
     } else {
