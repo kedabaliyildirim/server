@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/userSchema.js')
 const bcrypt = require('bcrypt')
 const cors = require('cors');
-const session = require('express-session')
+const reqLogIn = require('../helpers/auth.js') 
 // const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 router.use(cors({
@@ -13,20 +13,14 @@ router.use(cors({
     // localUrl
   }
 }))
-router.get('/', function (req, res, ) {
+router.get('/', function (req, res, next) {
   res.render('index', {
     title: 'Express'
   });
 });
-router.get('/checkauth', async (req, res) => {
-  console.log(req.session.key);
-  console.log(req.session);
-  if (!req.session.key) {
-    console.log('error');
-    res.send('authError')
-  } else {
-    res.send('success')
-  }
+router.post('/checkauth', reqLogIn, async (req, res) => {
+  console.log(req.session.user_id);
+  res.send('success')
 })
 router.post('/register', async (req, res) => {
 
@@ -48,7 +42,7 @@ router.post('/register', async (req, res) => {
     })
     let forceCheck = 0
     await user.save().then((data) => {
-      req.session.key = user._id
+      req.session.user_id = user._id
       console.log(`this is user ID : ${user._id}`);
       res.send(data)
     }).catch((err) => {
@@ -76,7 +70,7 @@ router.post('/register', async (req, res) => {
       chat
     })
     await user.save().then(() => {
-      req.session.key = user._id
+      req.session.user_id = user._id
       console.log(`this is user ID : ${user._id}`);
       res.send(user._id)
     }).catch((err) => {
@@ -98,8 +92,8 @@ router.post('/login', async (req, res) => {
   await bcrypt.compare(password, currUser.password).then((data) => {
     if (data) {
       console.log(data);
-      req.session.key = currUser._id
-      console.log(`Setted req.session id to ${req.session.key}`);
+      req.session.user_id = currUser._id
+      console.log(`Setted req.session id to ${req.session.user_id}`);
       res.send(currUser._id)
     } else(
       res.send('error')
@@ -110,8 +104,8 @@ router.post('/login', async (req, res) => {
 })
 router.post('/logout', (req, res) => {
   console.log(`this is logout`);
-  console.log(req.session.key);
-  req.session.key = null
+  console.log(req.session.user_id);
+  req.session.user_id = null
   res.send('success')
 })
 module.exports = router;

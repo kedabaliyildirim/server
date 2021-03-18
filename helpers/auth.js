@@ -1,9 +1,8 @@
 const session = require('express-session')
 // const dataBase = require('../helpers/db.js')
 const reqLogIn = (req, res, next) => {
-
-    const something = dataBase.find()
-    console.log(`this is something ${something}`);
-    // console.log('gekgoekpogskpogkspogkposekgposekgpo');
+    if (!req.session.user_id) {
+        res.send('error')
+    } else next()
 }
 module.exports = reqLogIn
