@@ -37,9 +37,9 @@ app.use(require('express-session')({
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
   },
-  store: new redisStore({
-    client: redisClient
-  }),
+  // store: new redisStore({
+  //   client: redisClient
+  // }),
   resave: true,
   saveUninitialized: true
 }))
