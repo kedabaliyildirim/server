@@ -19,7 +19,7 @@ router.get('/', function (req, res, ) {
   });
 });
 router.post('/checkauth', async (req, res) => {
-  console.log(req.session.key);
+  console.log(req.session);
   if (!req.session.key) {
     console.log('error');
     res.send('authError')
