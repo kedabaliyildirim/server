@@ -119,6 +119,8 @@ router.post('/checkauth', async (req, res) => {
     } else {
       res.send('error')
     }
+  }).catch((err) => {
+  console.log('error');
 })
 })
 module.exports = router;
