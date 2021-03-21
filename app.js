@@ -38,9 +38,9 @@ app.use(require('express-session')({
     httpOnly: false,
     secure: false
   },
-  store: new redisStore({
-    client: redisClient
-  }),
+  // store: new redisStore({
+  //   client: redisClient
+  // }),
   resave: true,
   saveUninitialized: true
 }))
