@@ -3,14 +3,14 @@ const router = express.Router();
 const User = require('../models/userSchema.js')
 const bcrypt = require('bcrypt')
 const cors = require('cors');
-const reqLogIn = require('../helpers/auth.js') 
-// const localUrl = 'http://localhost:8080'
+const reqLogIn = require('../helpers/auth.js')
+const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 router.use(cors({
   credentials: true,
   origin: {
     url,
-    // localUrl
+    localUrl
   }
 }))
 router.get('/', function (req, res, next) {
@@ -95,12 +95,12 @@ router.post('/login', async (req, res) => {
         console.log(`Setted req.session id to ${req.session.user_id}`);
         await res.send(currUser._id)
       })
-    } else (
+    } else(
       await req.session.save(() => {
         req.session.isLogged = false
-      }) 
-      )
-    }).catch((err) => {
+      })
+    )
+  }).catch((err) => {
     res.send('error')
     console.log(`this is login err : ${err}`);
   })
@@ -112,12 +112,12 @@ router.post('/logout', (req, res) => {
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
-  await req.session.save(() => {
-    if (req.session.isLogged) {
-      res.send('success')
-    } else {
-      res.send('error')
-    }
-})
+  console.log(req.session.isLogged);
+  if (req.session.isLogged) {
+    res.send('success')
+  } else {
+    res.send('error')
+  }
+
 })
 module.exports = router;
