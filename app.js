@@ -12,17 +12,17 @@ dotenv.config({
 //SESSION
 const redis = require('redis')
 const session = require('express-session')
-let redisStore = require('connect-redis')(session)
-let redisClient;
-if (process.env.REDISCLOUD_URL) {
-  redisClient = redis.createClient({
-    port: process.env.REDIS_PORT,
-    host: process.env.REDISCLOUD_URL,
-    password: process.env.REDIS_PASSWORD
-  })
-} else {
-  redisClient = redis.createClient
-}
+// let redisStore = require('connect-redis')(session)
+// let redisClient;
+// if (process.env.REDISCLOUD_URL) {
+//   redisClient = redis.createClient({
+//     port: process.env.REDIS_PORT,
+//     host: process.env.REDISCLOUD_URL,
+//     password: process.env.REDIS_PASSWORD
+//   })
+// } else {
+//   redisClient = redis.createClient
+// }
 const app = express();
 //DATABASE
 const dataBase = require('./helpers/db.js')
