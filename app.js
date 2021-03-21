@@ -16,6 +16,7 @@ let redisStore = require('connect-redis')(session)
 let redisClient;
 if (process.env.REDISCLOUD_URL) {
   redisClient = redis.createClient({
+    port: process.env.REDIS_PORT,
     host: process.env.REDISCLOUD_GRAY_URL,
     password: process.env.REDIS_PASSWORD
   })
