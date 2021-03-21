@@ -14,7 +14,15 @@ const redis = require('redis')
 const session = require('express-session')
 let redisStore = require('connect-redis')(session)
 let redisClient;
-const client = redis.createClient(process.env.REDIS_URL);
+if (process.env.REDISCLOUD_URL) {
+  redisClient = redis.createClient({
+    port: process.env.REDIS_PORT,
+    host: process.env.REDISCLOUD_URL,
+    password: process.env.REDIS_PASSWORD
+  })
+} else {
+  redisClient = redis.createClient
+}
 const app = express();
 //DATABASE
 const dataBase = require('./helpers/db.js')
@@ -31,7 +39,7 @@ app.use(require('express-session')({
     secure:false
   },
   store: new redisStore({
-    client: client
+    client: redisClient
   }),
   resave: true,
   saveUninitialized: true
