@@ -16,7 +16,7 @@ let redisStore = require('connect-redis')(session)
 let redisClient;
 if (process.env.REDISCLOUD_URL) {
   redisClient = redis.createClient({
-    host: 'redis://:pdb09e9f9666cd9d37d06633b6fcbf8df64e8c2d8ddea5ef2080e28a731aa385b@ec2-52-31-178-100.eu-west-1.compute.amazonaws.com:25799',
+    host: process.env.REDISCLOUD_GRAY_URL,
   })
 } else {
   redisClient = redis.createClient
