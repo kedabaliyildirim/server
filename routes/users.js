@@ -6,11 +6,13 @@ const cors = require('cors');
 const reqLogIn = require('../helpers/auth.js')
 const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
+const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
 router.use(cors({
   credentials: true,
   origin: {
     url,
-    localUrl
+    localUrl,
+    corsUrl
   }
 }))
 router.get('/', function (req, res, next) {
