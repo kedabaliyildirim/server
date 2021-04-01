@@ -29,21 +29,18 @@ const dataBase = require('./helpers/db.js')
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-var MemoryStore = require('connect/middleware/session/memory');
+
 //USING SESSION SECRETS
 app.use(require('express-session')({
   secret: process.env.SESSION_SECRET,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
-    httpOnly: false,
-    secure: false
+    httpOnly: true,
+    secure:false
   },
-  // store: new redisStore({
-  //   client: redisClient
-  // }),
-  store: MemoryStore({
-    reapInterval: 60000 * 10
-  })
+  store: new redisStore({
+    client: redisClient
+  }),
   resave: true,
   saveUninitialized: true
 }))
