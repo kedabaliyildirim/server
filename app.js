@@ -26,6 +26,7 @@ if (process.env.REDISCLOUD_URL) {
 const app = express();
 //DATABASE
 const dataBase = require('./helpers/db.js')
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -36,7 +37,8 @@ app.use(require('express-session')({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
-    secure:false
+    secure: false,
+    sameSite:'none'
   },
   store: new redisStore({
     client: redisClient
