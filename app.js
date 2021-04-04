@@ -37,7 +37,7 @@ app.use(require('express-session')({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
-    secure: false,
+    secure: true,
     sameSite:'none'
   },
   store: new redisStore({
