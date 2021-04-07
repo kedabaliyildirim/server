@@ -23,8 +23,12 @@ if (process.env.REDISCLOUD_URL) {
 } else {
   redisClient = redis.createClient
 }
-const app = express();
+const app = require('express')();
+// eslint-disable-next-line no-unused-vars
+const io = require('./helpers/socket.js')
+app.io = io
 //DATABASE
+// eslint-disable-next-line no-unused-vars
 const dataBase = require('./helpers/db.js')
 
 // view engine setup
@@ -37,13 +41,13 @@ app.use(require('express-session')({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
-    secure: true,
-    sameSite:'none'
+    secure: false,
+    // sameSite:'none'
   },
   store: new redisStore({
     client: redisClient
   }),
-  proxy:true,
+  proxy: true,
   resave: true,
   saveUninitialized: true
 }))
@@ -60,8 +64,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //ROUTES
 const usersRoot = require('./routes/users.js')
+const postRoot = require('./routes/post.js')
+const indexRoot = require('./routes/index.js');
 app.use('/users', usersRoot);
-
+app.use('/post', postRoot);
+app.use('/', indexRoot);
 //VIEWS
 
 

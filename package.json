@@ -17,6 +17,8 @@
     "express": "~4.16.1",
     "express-session": "^1.17.1",
     "http-errors": "^1.6.3",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.7",
@@ -24,6 +26,7 @@
     "redis": "^3.0.2",
     "redis-cli": "^2.0.0",
     "redis-commander": "^0.7.0",
+    "socket.io": "^4.0.1",
     "url": "^0.11.0"
   },
   "devDependencies": {

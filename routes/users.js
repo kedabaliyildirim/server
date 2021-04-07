@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require('../models/userSchema.js')
 const bcrypt = require('bcrypt')
 const cors = require('cors');
-const reqLogIn = require('../helpers/auth.js')
 const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
@@ -15,12 +14,6 @@ router.use(cors({
     corsUrl
   }
 }))
-router.get('/', function (req, res, next) {
-  res.render('index', {
-    title: 'Express'
-  });
-});
-
 router.post('/register', async (req, res) => {
 
   const {
@@ -42,7 +35,6 @@ router.post('/register', async (req, res) => {
     let forceCheck = 0
     await user.save().then((data) => {
       req.session.user_id = user._id
-      console.log(`this is user ID : ${user._id}`);
       res.send(data)
     }).catch((err) => {
       console.log(`this is an error ${err}`);
@@ -70,7 +62,6 @@ router.post('/register', async (req, res) => {
     })
     await user.save().then(() => {
       req.session.user_id = user._id
-      console.log(`this is user ID : ${user._id}`);
       res.send(user._id)
     }).catch((err) => {
       console.log(`this is an error ${err}`);
@@ -79,7 +70,6 @@ router.post('/register', async (req, res) => {
   }
 });
 router.post('/login', async (req, res) => {
-  console.log('at login');
   const {
     userName,
     password,
@@ -90,11 +80,9 @@ router.post('/login', async (req, res) => {
   const currUser = await find
   await bcrypt.compare(password, currUser.password).then(async (data) => {
     if (data) {
-      console.log(`this is login data ${data}`);
       await req.session.save(async () => {
         req.session.isLogged = true
         req.session.user_id = currUser._id
-        console.log(`Setted req.session id to ${req.session.user_id}`);
         await res.send(currUser._id)
       })
     } else(
@@ -108,13 +96,10 @@ router.post('/login', async (req, res) => {
   })
 })
 router.post('/logout', (req, res) => {
-  console.log(`this is logout`);
-  console.log(`this is logout reqss: ${req.session.user_id}`);
-  req.session.user_id = null
+  req.session.destroy()
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
-  console.log(req.session.isLogged);
   if (req.session.isLogged) {
     res.send('success')
   } else {

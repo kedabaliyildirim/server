@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const {
-    log
-} = require('debug')
+const {postSchema} = require('./postSchema.js')
 const userSchema = mongoose.Schema({
     userName: {
         type: String,
@@ -33,7 +31,8 @@ const userSchema = mongoose.Schema({
             type: Object,
             required: false
         }
-    }
+    },
+    child: [postSchema]
 })
 userSchema.statics.authUser = async function (userName, password) {
     const findUser = await this.findOne({

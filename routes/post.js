@@ -1,0 +1,118 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../models/userSchema.js')
+const {
+    post
+} = require('../models/postSchema.js')
+const cors = require('cors');
+const localUrl = 'http://localhost:8080'
+const url = 'https://vue-test-47cc0.web.app'
+const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
+router.use(cors({
+    credentials: true,
+    origin: {
+        url,
+        localUrl,
+        corsUrl
+    }
+}))
+const getIo = (req) => {
+    const message = 'successfully socketed'
+    req.app.io.emit('updateHome', message)
+}
+router.get('/getpost', async (req, res) => {
+    console.log("@getpost");
+    post.find().then((data) => {
+        res.send(data);
+    }).catch((err) => {
+        res.send(err);
+    })
+
+    router.post('/', async (req, res) => {
+        if (req.session.isLogged) {
+
+            const {
+                title,
+                message
+            } = req.body
+            const user = await User.findById(req.session.user_id)
+            const Post = new post({
+                user: {
+                    userName: user.userName
+                },
+                body: {
+                    title,
+                    message
+                }
+            })
+            Post.save().then((data) => {
+                getIo(req);
+                User.findOneAndUpdate({
+                    _id: req.session.user_id
+                }, {
+                    $push: {
+                        child: Post
+                    }
+                }, {
+                    new: true
+                }, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                }).then(() => {})
+                res.send(data)
+            })
+        } else {
+            res.send('loginerror')
+        }
+    })
+    router.post('/delete', async (req, res) => {
+        const {
+            itemId
+        } = req.body
+        await post.findByIdAndDelete(itemId).then(async () => {
+            
+            await User.findOneAndUpdate({
+                _id: req.session.user_id
+            }, {
+                $pull: {
+                    child: {
+                        _id: itemId
+                    }
+                }
+            }, (err, user) => {
+                console.log(user);
+            }).then(() => {
+                getIo(req);
+                res.send('success')
+            }).catch((err) => {
+                res.send(err)
+            })
+        })
+        res.send('deleted')
+    })
+    router.post('/deleteall', async (req, res) => {
+        const {
+            userName
+        } = req.body
+        await post.deleteMany({
+            userName: userName
+        }).then(async () => {
+            
+            await User.findOneAndUpdate({
+                _id: req.session.user_id
+            }, {
+                $unset: {
+                    child: 1
+                }
+            }).then(() => {
+                getIo(req);
+                res.send('success')
+            }).catch((err) => {
+                res.send(err)
+            })
+        })
+    })
+
+})
+module.exports = router;
