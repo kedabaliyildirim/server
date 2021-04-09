@@ -14,6 +14,4 @@ const io = require('socket.io')(server, {
 });
 io.on('connection', () => {});
 server.listen(3002)
-const message = 'aaaaa'
-io.emit('update', message)
 module.exports = io

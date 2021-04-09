@@ -27,7 +27,8 @@
     "redis-cli": "^2.0.0",
     "redis-commander": "^0.7.0",
     "socket.io": "^4.0.1",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint": "^7.21.0"

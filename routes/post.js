@@ -20,14 +20,27 @@ const getIo = (req) => {
     const message = 'successfully socketed'
     req.app.io.emit('updateHome', message)
 }
-router.get('/getpost', async (req, res) => {
+router.get('/getposts', async (req, res) => {
     console.log("@getpost");
     post.find().then((data) => {
         res.send(data);
     }).catch((err) => {
         res.send(err);
     })
-
+    router.post('/getpost', async (req, res) => {
+        const {
+            postId
+        } = req.body
+        if (postId) {
+            post.findOne({
+                _id: postId
+            }).then((response) => {
+                res.send(response)
+            }).catch((err) => {
+                res.send(err)
+            })
+        } else res.send('error')
+    })
     router.post('/', async (req, res) => {
         if (req.session.isLogged) {
 
@@ -35,33 +48,37 @@ router.get('/getpost', async (req, res) => {
                 title,
                 message
             } = req.body
-            const user = await User.findById(req.session.user_id)
-            const Post = new post({
-                user: {
-                    userName: user.userName
-                },
-                body: {
-                    title,
-                    message
-                }
-            })
-            Post.save().then((data) => {
-                getIo(req);
-                User.findOneAndUpdate({
-                    _id: req.session.user_id
-                }, {
-                    $push: {
-                        child: Post
+            if (title && message) {
+                const user = await User.findById(req.session.user_id)
+                const Post = new post({
+                    user: {
+                        userName: user.userName
+                    },
+                    body: {
+                        title,
+                        message
                     }
-                }, {
-                    new: true
-                }, (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                }).then(() => {})
-                res.send(data)
-            })
+                })
+                Post.save().then((data) => {
+                    getIo(req);
+                    User.findOneAndUpdate({
+                        _id: req.session.user_id
+                    }, {
+                        $addToSet: {
+                            child: Post
+                        }
+                    }, {
+                        new: true
+                    }, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }).then(() => {})
+                    res.send(data)
+                })
+            } else {
+                res.send('validation error')
+            }
         } else {
             res.send('loginerror')
         }
@@ -71,7 +88,7 @@ router.get('/getpost', async (req, res) => {
             itemId
         } = req.body
         await post.findByIdAndDelete(itemId).then(async () => {
-            
+
             await User.findOneAndUpdate({
                 _id: req.session.user_id
             }, {
@@ -98,7 +115,7 @@ router.get('/getpost', async (req, res) => {
         await post.deleteMany({
             userName: userName
         }).then(async () => {
-            
+
             await User.findOneAndUpdate({
                 _id: req.session.user_id
             }, {

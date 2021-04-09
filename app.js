@@ -66,15 +66,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 const usersRoot = require('./routes/users.js')
 const postRoot = require('./routes/post.js')
 const indexRoot = require('./routes/index.js');
+const commentRoot = require('./routes/comment.js');
 app.use('/users', usersRoot);
 app.use('/post', postRoot);
 app.use('/', indexRoot);
+app.use('/comment', commentRoot);
 //VIEWS
 
 
 
 // catch 404 and forward to error handler NO RENDERS AFTER THIS POINT
-app.use((res, next) => {
+app.use((req, res, next) => {
   next(createError(404));
 });
 // error handler
