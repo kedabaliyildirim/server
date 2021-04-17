@@ -24,15 +24,17 @@ const getIo = (req, postId) => {
 }
 router.post('/getcomments', (req, res) => {
     const { postId } = req.body
-    if (postId) {
-        post.findOne({ _id: postId }, (err, data) => {
-            res.send(data.child)
-        })
-    } else res.send('body error')
+    if (postId !== 'undefined') {
+        if (postId !== null) {
+            post.findOne({ _id: postId }, (err, data) => {
+                res.send(data.child)
+            })
+        } else res.send('body_error')
+    } else res.send('body_error')
 })
 router.post('/', (req, res) => {
     const { Comment, postId } = req.body
-    console.log(Comment);
+    console.log(`this is comment ${Comment}`);
     if (Comment) {
         const userId = req.session.user_id
         User.findOne({ _id: userId }, (err, usr) => {

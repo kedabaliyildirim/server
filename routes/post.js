@@ -31,6 +31,7 @@ router.get('/getposts', async (req, res) => {
         const {
             postId
         } = req.body
+        console.log(`postId is ${postId}`);
         if (postId) {
             post.findOne({
                 _id: postId
