@@ -14,7 +14,9 @@ const io = require('socket.io')(server, {
             url,
             corsUrl
         }
-    }
+    },
+    secure: true,
+    sameSite: 'none'
 });
 io.on('connect', () => {
     console.log('connected');
