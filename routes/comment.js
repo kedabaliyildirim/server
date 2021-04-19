@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const app = require('express')
 const {
     post,
     comment
@@ -28,7 +29,7 @@ const getIo = (req, postId, comment) => {
             _id:comment._id
         }
     }
-    req.app.io.emit('updatePost', message)
+    app.io.emit('updatePost', message)
 }
 router.post('/getcomments', (req, res) => {
     const { postId } = req.body
