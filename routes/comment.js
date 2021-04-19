@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const app = require('express')
+const io = require('../helpers/socket.js')
 const {
     post,
     comment
