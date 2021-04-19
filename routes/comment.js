@@ -29,7 +29,7 @@ const getIo = (req, postId, comment) => {
             _id:comment._id
         }
     }
-    app.io.emit('updatePost', message)
+    io.emit('updatePost', message)
 }
 router.post('/getcomments', (req, res) => {
     const { postId } = req.body
