@@ -12,6 +12,8 @@ const io = require('socket.io')(server, {
         }
     }
 });
-io.on('connection', () => {});
+io.on('connection', () => {
+    console.log('connected io');
+});
 server.listen(3002)
 module.exports = io
