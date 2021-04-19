@@ -18,9 +18,16 @@ router.use(cors({
         corsUrl
     }
 }))
-const getIo = (req, postId) => {
-    const message = postId
-    req.app.io.emit('updatePost', message)
+const getIo = (req, postId, comment) => {
+    const message = {
+        postId: postId,
+        body: {
+            username: comment.userName,
+            message: comment.comment,
+            _id:comment._id
+        }
+    }
+    req.app.io.emit('updatePost', message, comment)
 }
 router.post('/getcomments', (req, res) => {
     const { postId } = req.body
@@ -38,16 +45,18 @@ router.post('/', (req, res) => {
     if (Comment) {
         const userId = req.session.user_id
         User.findOne({ _id: userId }, (err, usr) => {
-            const comentPost = new comment({
-                userName: usr.userName,
-                comment: Comment
-            })
-            comentPost.save().then(() => {
-                post.findOneAndUpdate({ _id: postId }, { $addToSet: { child: comentPost } }).then(() => {
-                    getIo(req, postId)
-                    res.send('success')
+            if (usr) {
+                const comentPost = new comment({
+                    userName: usr.userName,
+                    comment: Comment
                 })
-            })
+                comentPost.save().then(() => {
+                    post.findOneAndUpdate({ _id: postId }, { $addToSet: { child: comentPost } }).then(() => {
+                        getIo(req, postId, comentPost)
+                        res.send('success')
+                    })
+                })
+            } else res.send('error')
         })
     }
     else res.send('error')
