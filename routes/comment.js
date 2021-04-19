@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const app = require('express')
-const io = require('../helpers/socket.js')
 const {
     post,
     comment
@@ -18,7 +16,8 @@ router.use(cors({
         url,
         localUrl,
         corsUrl
-    }
+    },
+    methods:['GET', "POST"]
 }))
 const getIo = (req, postId, comment) => {
     console.log(`@updatePost Socket`);
@@ -30,11 +29,8 @@ const getIo = (req, postId, comment) => {
             _id:comment._id
         }
     }
-    io.emit('updatePost', message)
+    req.app.io.emit('updatePost', message, comment)
 }
-io.on('updatePost', () => {
-    console.log('updatePost');
-})
 router.post('/getcomments', (req, res) => {
     const { postId } = req.body
     if (postId !== 'undefined') {
