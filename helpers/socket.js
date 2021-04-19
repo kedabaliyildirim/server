@@ -15,10 +15,9 @@ const io = require('socket.io')(server, {
             corsUrl
         },
         methods: ['GET', 'POST'],
-        Credentials:true
-    },
-    secure: true,
-    sameSite: 'none'
+        Credentials: true,
+        allowHeaders: ["Access-Control-Allow-Origin", "getMeMenager"]
+    }
 });
 io.on('updatePost', () => {
     console.log('updatePost Detected');
