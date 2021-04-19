@@ -1,3 +1,4 @@
+const httpserver = require('http')
 const io = require("socket.io")(httpServer, {
     cors: {
         origin: "https://localhost:8080",
@@ -6,3 +7,4 @@ const io = require("socket.io")(httpServer, {
         credentials: true
     }
 });
+module.exports = io
