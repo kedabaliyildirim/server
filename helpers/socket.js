@@ -18,8 +18,8 @@ const io = require('socket.io')(server, {
     secure: true,
     sameSite: 'none'
 });
-io.on('connect', () => {
-    console.log('connected');
+io.on('updatePost', () => {
+    console.log('updatePost Detected');
 });
 server.listen(3002)
 module.exports = io
