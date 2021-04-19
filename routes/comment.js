@@ -16,8 +16,7 @@ router.use(cors({
         url,
         localUrl,
         corsUrl
-    },
-    methods:['GET', "POST"]
+    }
 }))
 const getIo = (req, postId, comment) => {
     console.log(`@updatePost Socket`);

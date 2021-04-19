@@ -13,7 +13,9 @@ const io = require('socket.io')(server, {
             localUrl3,
             url,
             corsUrl
-        }
+        },
+        methods: ['GET', 'POST'],
+        Credentials:true
     },
     secure: true,
     sameSite: 'none'
