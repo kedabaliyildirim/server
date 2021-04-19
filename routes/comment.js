@@ -32,6 +32,9 @@ const getIo = (req, postId, comment) => {
     }
     io.emit('updatePost', message)
 }
+io.on('updatePost', () => {
+    console.log('updatePost');
+})
 router.post('/getcomments', (req, res) => {
     const { postId } = req.body
     if (postId !== 'undefined') {
