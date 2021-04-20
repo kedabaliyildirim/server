@@ -17,12 +17,14 @@ router.use(cors({
     }
 }))
 const getIo = (req) => {
+    console.log('hello');
     const message = 'successfully socketed'
-    req.app.io.emit('updateHome', message)
+    req.app.io.emit('hello', message)
 }
 router.get('/getposts', async (req, res) => {
     console.log("@getpost");
     post.find().then((data) => {
+        getIo(req)
         res.send(data);
     }).catch((err) => {
         res.send(err);
