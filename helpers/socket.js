@@ -1,7 +1,9 @@
-const server = require('http').createServer((req, res) => {
-    res.end('hello')
-});
-server.listen(3002);
+const express = require('express');
+const PORT = 3002;
+const server = express().use((req, res) => res.sendFile(INDEX, {
+        root: __dirname
+    }))
+    .listen(PORT, () => console.log(`Listening on ${PORT}`));
 const socketIO = require('socket.io')(server, {
     cors: {
         origin: ["http://localhost:8080",
@@ -11,12 +13,9 @@ const socketIO = require('socket.io')(server, {
     Headers: "Access-Control-Allow-Origin"
 });
 const io =socketIO.listen(server)
-io.on('connection', client => {
-    client.on('event', () => {
-        console.log('connected somehow');
-    });
-    client.on('disconnect', () => {
-        /* … */ });
+io.on('connection', (socket) => {
+    console.log('Client connected');
+    socket.on('disconnect', () => console.log('Client disconnected'));
 });
-console.log(process.env.SOCKET_PORT);
+setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
 module.exports = io
