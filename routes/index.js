@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const io = require('../helpers/socket')
 router.get('/', (req, res) => {
-    const message = 'something'
-    io.emit('update', message)
+    req.app.io.emit('hello')
+    req.app.io.on('hello', () => {
+        console.log('someone Says Hello');
+    })
     res.send({
         status: 1
     })
