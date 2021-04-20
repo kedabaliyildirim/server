@@ -43,6 +43,7 @@ io.on('connection', (socket) => {
 });
 
 setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
+app.io = io
 
 //DATABASE
 // eslint-disable-next-line no-unused-vars
