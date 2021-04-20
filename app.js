@@ -25,8 +25,25 @@ if (process.env.REDISCLOUD_URL) {
 }
 const app = require('express')();
 // eslint-disable-next-line no-unused-vars
-const io = require('./helpers/socket.js')
-app.io = io
+const socketIO = require('socket.io');
+
+const PORT = process.env.SOCKET_PORT || 3003;
+
+const server = express()
+  .use((req, res) => res.sendFile({
+    root: __dirname
+  }))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const io = socketIO(server);
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
+  socket.on('disconnect', () => console.log('Client disconnected'));
+});
+
+setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
+
 //DATABASE
 // eslint-disable-next-line no-unused-vars
 const dataBase = require('./helpers/db.js')
