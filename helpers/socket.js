@@ -13,5 +13,5 @@ io.on('connection', client => {
         /* … */ });
 });
 console.log(process.env.SOCKET_PORT);
-server.listen(process.env.SOCKET_PORT);
+server.listen(65467);
 module.exports = io
