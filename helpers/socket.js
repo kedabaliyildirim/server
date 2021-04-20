@@ -7,7 +7,8 @@ const socketIO = require('socket.io')(server, {
         origin: ["http://localhost:8080",
             "https://vue-serve-test.herokuapp.com",
         "https://vue-test-47cc0.web.app"]
-    }
+    },
+    Headers: "Access-Control-Allow-Origin"
 });
 const io =socketIO.listen(server)
 io.on('connection', client => {
