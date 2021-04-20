@@ -25,48 +25,75 @@ const getIo = (req, postId, comment) => {
         body: {
             username: comment.userName,
             message: comment.comment,
-            _id:comment._id
+            _id: comment._id
         }
     }
     req.app.io.emit('updatePost', message, comment)
 }
 router.post('/getcomments', (req, res) => {
-    const { postId } = req.body
+    const {
+        postId
+    } = req.body
     if (postId !== 'undefined') {
         if (postId !== null) {
-            post.findOne({ _id: postId }, (err, data) => {
+            post.findOne({
+                _id: postId
+            }, (err, data) => {
                 res.send(data.child)
             })
         } else res.send('body_error')
     } else res.send('body_error')
 })
 router.post('/', (req, res) => {
-    const { Comment, postId } = req.body
+    const {
+        Comment,
+        postId
+    } = req.body
     console.log(`this is comment ${Comment}`);
     if (Comment) {
         const userId = req.session.user_id
-        User.findOne({ _id: userId }, (err, usr) => {
+        User.findOne({
+            _id: userId
+        }, (err, usr) => {
             if (usr) {
                 const comentPost = new comment({
                     userName: usr.userName,
                     comment: Comment
                 })
                 comentPost.save().then(() => {
-                    post.findOneAndUpdate({ _id: postId }, { $addToSet: { child: comentPost } }).then(() => {
+                    post.findOneAndUpdate({
+                        _id: postId
+                    }, {
+                        $addToSet: {
+                            child: comentPost
+                        }
+                    }).then(() => {
                         getIo(req, postId, comentPost)
                         res.send('success')
                     })
                 })
             } else res.send('error')
         })
-    }
-    else res.send('error')
+    } else res.send('error')
 })
 router.post('/deletecomment', (req, res) => {
-    const { commentId, postId } = req.body
+    const {
+        commentId,
+        postId
+    } = req.body
     console.log(commentId);
-    comment.findByIdAndDelete({ _id: commentId }).then(() => {
-        post.findByIdAndUpdate({ _id: postId }, { $pull: { child: { _id: commentId } } }).then(() => {
+    comment.findByIdAndDelete({
+        _id: commentId
+    }).then(() => {
+        post.findByIdAndUpdate({
+            _id: postId
+        }, {
+            $pull: {
+                child: {
+                    _id: commentId
+                }
+            }
+        }).then(() => {
             res.send('success')
         }).catch((err) => {
             res.send(err)

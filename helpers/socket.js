@@ -1,17 +1,17 @@
-const app = require('../app')
-const server = require('http').createServer(app);
-const localUrl = 'http://localhost:8080'
-const url = 'https://vue-test-47cc0.web.app'
-const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
+const server = require('http').createServer();
 const io = require('socket.io')(server, {
     cors: {
-        origin: {
-            localUrl,
-            url,
-            corsUrl
-        }
+        origin: ["http://localhost:8080",
+            "https://vue-serve-test.herokuapp.com",
+        "https://vue-test-47cc0.web.app"]
     }
 });
-io.on('connection', () => {});
-server.listen(3002)
+io.on('connection', client => {
+    client.on('event', () => {
+        /* … */ });
+    client.on('disconnect', () => {
+        /* … */ });
+});
+console.log(process.env.SOCKET_PORT);
+server.listen(process.env.SOCKET_PORT);
 module.exports = io
