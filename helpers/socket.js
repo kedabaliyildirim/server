@@ -1,7 +1,7 @@
 const express = require('express');
 const socketIO = require('socket.io');
 
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.SOCKET_PORT || 3003;
 const INDEX = '/index.html';
 
 const server = express()
