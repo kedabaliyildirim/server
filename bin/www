@@ -3,10 +3,10 @@
 /**
  * Module dependencies.
  */
-
 const app = require('../app');
-const debug = require('debug')('server:server');
+const debug = require('debug')('js-ex:server');
 const http = require('http');
+const socketApi = require('../helpers/socket');
 
 /**
  * Get port from environment and store in Express.
@@ -14,13 +14,12 @@ const http = require('http');
 
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-console.log(`app is on ${port}`);
-
 /**
  * Create HTTP server.
  */
 
 const server = http.createServer(app);
+socketApi.io.listen(server)
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -59,9 +58,9 @@ function onError(error) {
     throw error;
   }
 
-  const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  const bind = typeof port === 'string' ?
+    'Pipe ' + port :
+    'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -84,8 +83,8 @@ function onError(error) {
 
 function onListening() {
   const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  const bind = typeof addr === 'string' ?
+    'pipe ' + addr :
+    'port ' + addr.port;
   debug('Listening on ' + bind);
 }

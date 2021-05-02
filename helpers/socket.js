@@ -1,23 +1,20 @@
-const server = require('http').createServer();
-const io = require('socket.io')(server, {
-    cors: {
-        origin: '*',
-        methods: ["GET", "POST"],
-        credentials: true
-    }
-});
-io.on('connection', client => {
-    console.log('@connection');
-    client.on('event', () => {
-        /* … */ });
-    client.on('disconnect', () => {
-        /* … */ });
-});
-io.on('connect', (client) => {
-    console.log(`this is connect ${client}`);
+const io = require('socket.io')()
+const socketApi = {
+    io: io
+};
+io.emit('what','da')
+io.on('connection', (socket) => {
+    console.log('hello');
+    socket.on('hello', (data) => {
+        console.log(data);
+    })
+    socket.on('what', (data) => {
+        console.log(data);
+    })
+    socket.emit('hell', 'is')
+    socket.on('hell', (data) => {
+        console.log('going');
+        console.log(data);
+    })
 })
-io.on('hello', (data) => {
-    console.log(data);
-})
-server.listen(3004);
-module.exports = io
+module.exports = socketApi

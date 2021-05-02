@@ -24,9 +24,6 @@ if (process.env.REDISCLOUD_URL) {
   redisClient = redis.createClient
 }
 const app = require('express')();
-// eslint-disable-next-line no-unused-vars
-const io = require('./helpers/socket.js')
-app.io = io
 //DATABASE
 // eslint-disable-next-line no-unused-vars
 const dataBase = require('./helpers/db.js')
@@ -36,18 +33,18 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 //USING SESSION SECRETS
-  app.all('/', function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next()
-  });
+app.all('/', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next()
+});
 app.use(require('express-session')({
   secret: process.env.SESSION_SECRET,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
     secure: true,
-    sameSite:'none'
+    sameSite: 'none'
   },
   store: new redisStore({
     client: redisClient
