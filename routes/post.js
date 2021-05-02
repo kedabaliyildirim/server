@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/userSchema.js')
+const socketApi = require('../helpers/socket')
 const {
     post
 } = require('../models/postSchema.js')
@@ -16,15 +17,18 @@ router.use(cors({
         corsUrl
     }
 }))
-const getIo = (req) => {
+const getIo = () => {
     console.log('hello');
     const message = 'successfully socketed'
-    req.app.io.emit('hello', message)
+    socketApi.io.on('connection', (socket) => {
+        console.log('connected');
+    })
+    
 }
 router.get('/getposts', async (req, res) => {
     console.log("@getpost");
     post.find().then((data) => {
-        getIo(req)
+        getIo()
         res.send(data);
     }).catch((err) => {
         res.send(err);
@@ -63,7 +67,7 @@ router.get('/getposts', async (req, res) => {
                     }
                 })
                 Post.save().then((data) => {
-                    getIo(req);
+                    getIo();
                     User.findOneAndUpdate({
                         _id: req.session.user_id
                     }, {
@@ -103,7 +107,7 @@ router.get('/getposts', async (req, res) => {
             }, (err, user) => {
                 console.log(user);
             }).then(() => {
-                getIo(req);
+                getIo();
                 res.send('success')
             }).catch((err) => {
                 res.send(err)
@@ -126,7 +130,7 @@ router.get('/getposts', async (req, res) => {
                     child: 1
                 }
             }).then(() => {
-                getIo(req);
+                getIo();
                 res.send('success')
             }).catch((err) => {
                 res.send(err)
