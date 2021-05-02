@@ -11,7 +11,7 @@
 <body>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io('//localhost:3000')
+        const socket = io('//vue-serve-test.herokuapp.com/')
         socket.on('connection', (socky) => {
             console.log('heeee');
         })
