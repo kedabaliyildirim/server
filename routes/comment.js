@@ -10,6 +10,7 @@ const cors = require('cors');
 const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
+const socketApi = require('../helpers/socket')
 router.use(cors({
     credentials: true,
     origin: {
@@ -18,7 +19,7 @@ router.use(cors({
         corsUrl
     }
 }))
-const getIo = (req, postId, comment) => {
+const getIo = ( postId, comment) => {
     console.log(`@updatePost Socket`);
     const message = {
         postId: postId,
@@ -28,7 +29,7 @@ const getIo = (req, postId, comment) => {
             _id: comment._id
         }
     }
-    req.app.io.emit('updatePost', message, comment)
+    socketApi.io.emit('updatePost', message)
 }
 router.post('/getcomments', (req, res) => {
     const {
@@ -68,7 +69,7 @@ router.post('/', (req, res) => {
                             child: comentPost
                         }
                     }).then(() => {
-                        getIo(req, postId, comentPost)
+                        getIo(postId, comentPost)
                         res.send('success')
                     })
                 })

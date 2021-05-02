@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const socketApi = require('../helpers/socket')
 router.get('/', async (req, res) => {
-    await socketApi.io.emit('hello', 'whatisLove')
     socketApi.io.on('connection', (socket) => {
-        socket.emit('hello','a message')
+        socket.broadcast.emit('hello','a message')
     })
+    socketApi.io.emit('Dello','Deldel')
     res.render('index')
 })
 module.exports = router

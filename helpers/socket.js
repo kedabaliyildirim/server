@@ -2,11 +2,16 @@ const io = require('socket.io')()
 const socketApi = {
     io: io
 };
-io.emit('what','da')
+io.emit('what', 'da')
+io.on('hello', (data) => {
+    console.log(data);
+})
 io.on('connection', (socket) => {
-    console.log('hello');
-    socket.on('hello', (data) => {
+    socket.on('rockAndRoll', (data) => {
         console.log(data);
+    })
+    socket.on('hello', (data) => {
+        console.log(`this is data ${data}`);
     })
     socket.on('what', (data) => {
         console.log(data);

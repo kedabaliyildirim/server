@@ -20,15 +20,12 @@ router.use(cors({
 const getIo = () => {
     console.log('hello');
     const message = 'successfully socketed'
-    socketApi.io.on('connection', (socket) => {
-        console.log('connected');
-    })
+    socketApi.io.emit('postit',message)
     
 }
 router.get('/getposts', async (req, res) => {
     console.log("@getpost");
     post.find().then((data) => {
-        getIo()
         res.send(data);
     }).catch((err) => {
         res.send(err);

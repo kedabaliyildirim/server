@@ -9,13 +9,24 @@
 </head>
 
 <body>
+    <button onClick="getit()">aaaaa</button>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io('//vue-serve-test.herokuapp.com/')
+        // const url = 'vue-serve-test.herokuapp.com'
+        const url = 'localhost:3000'
+        const socket = io(`//${url}/`)
+
+        function getit() {
+            socket.emit('rockAndRoll', 'rock and aaaaaaa')
+        }
         socket.on('connection', (socky) => {
             console.log('heeee');
         })
         socket.on('hello', (data) => {
+            console.log(data);
+        })
+        socket.on('Dello', (data) => {
+            console.log('@Dello');
             console.log(data);
         })
     </script>
