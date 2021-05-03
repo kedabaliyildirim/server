@@ -6,12 +6,14 @@ const cors = require('cors');
 const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
+const netifyUrl = 'https://608fd9580b164e5e4d693129--stoic-turing-035110.netlify.app'
 router.use(cors({
   credentials: true,
   origin: {
     url,
     localUrl,
-    corsUrl
+    corsUrl,
+    netifyUrl
   }
 }))
 router.post('/register', async (req, res) => {
@@ -83,6 +85,7 @@ router.post('/login', async (req, res) => {
       await req.session.save(async () => {
         req.session.isLogged = true
         req.session.user_id = currUser._id
+        console.log(`userid is ${currUser._id}`);
         await res.send(currUser._id)
       })
     } else(
@@ -91,6 +94,7 @@ router.post('/login', async (req, res) => {
       })
     )
   }).catch((err) => {
+    console.log(`login error ${err}`);
     res.send('error')
     console.log(`this is login err : ${err}`);
   })
@@ -100,9 +104,12 @@ router.post('/logout', (req, res) => {
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
+  console.log(req.session.isLogged);
   if (req.session.isLogged) {
+    console.log('success');
     res.send('success')
   } else {
+    console.log(`error`);
     res.send('error')
   }
 

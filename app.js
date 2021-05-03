@@ -41,10 +41,10 @@ app.all('/', function (req, res, next) {
 app.use(require('express-session')({
   secret: process.env.SESSION_SECRET,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24,
+    maxAge: process.env.SESSION_MAX_AGE,
     httpOnly: false,
-    secure: true,
-    sameSite: 'none'
+    secure: process.env.SESSION_SECURE,
+    sameSite: process.env.SESSION_SAMESITE
   },
   store: new redisStore({
     client: redisClient
