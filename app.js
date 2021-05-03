@@ -41,7 +41,7 @@ app.all('/', function (req, res, next) {
 app.use(require('express-session')({
   secret: process.env.SESSION_SECRET,
   cookie: {
-    maxAge: process.env.SESSION_MAX_AGE,
+    maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
     secure: process.env.SESSION_SECURE,
     sameSite: process.env.SESSION_SAMESITE
