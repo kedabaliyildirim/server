@@ -19,15 +19,16 @@ const postSchema = mongoose.Schema({
     body: {
         title: {
             type: String,
-            required: true
+            required: true,
+            maxlength: 200
         },
         message: {
             type: String,
             required: true,
-            maxlength: 6000
+            maxlength: 1200
         }
     },
-    child:[commentSchema]
+    child: [commentSchema]
 
 }, {
     timestamps: true,

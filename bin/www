@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+const localUrl = 'http://localhost:8080'
+const url = 'https://vue-test-47cc0.web.app'
+const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
+const netifyUrl = 'https://608fd9580b164e5e4d693129--stoic-turing-035110.netlify.app'
 /**
  * Module dependencies.
  */
@@ -19,7 +23,15 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
-socketApi.io.listen(server)
+socketApi.io.listen(server, {
+  cors: {
+    url,
+    localUrl,
+    corsUrl,
+    netifyUrl
+  },
+  sameSite: 'none'
+})
 
 /**
  * Listen on provided port, on all network interfaces.

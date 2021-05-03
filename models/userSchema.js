@@ -5,12 +5,15 @@ const userSchema = mongoose.Schema({
     userName: {
         type: String,
         required: [true, 'User Name Cannot Be Empty'],
-        unique: false
+        unique: false,
+        minLength: 5,
+        maxLength:18
     },
     password: {
         type: String,
         required: [true, 'Password Cannot Be Empty'],
-        unique: false
+        unique: false,
+
     },
     email: {
         type: String,
@@ -20,7 +23,8 @@ const userSchema = mongoose.Schema({
     userAge: {
         type: Number,
         required: [true, 'Age Cannot Be Empty'],
-        unique: false
+        unique: false,
+        
     },
     chat: {
         message: {
