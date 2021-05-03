@@ -11,7 +11,7 @@ const socketApi = require('../helpers/socket')
 const localUrl = 'http://localhost:8080'
 const url = 'https://vue-test-47cc0.web.app'
 const corsUrl = 'https://stormy-mountain-28848.herokuapp.com'
-const netifyUrl = 'https://608fd9580b164e5e4d693129--stoic-turing-035110.netlify.app'
+const netifyUrl = 'https://stoic-turing-035110.netlify.app'
 router.use(cors({
     credentials: true,
     origin: {
