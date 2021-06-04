@@ -54,6 +54,7 @@ router.post('/', (req, res) => {
     } = req.body
     console.log(`this is comment ${Comment}`);
     if (Comment) {
+        console.log(`this is session islogged ${req.session.isLogged}`);
         const userId = req.session.user_id
         User.findOne({
             _id: userId
