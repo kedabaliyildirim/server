@@ -30,7 +30,8 @@ const getIo = (Post) => {
           title:Post.body.title,
           message:Post.body.message
       },
-      _id: Post._id
+      _id: Post._id,
+      date:Post.createdAt
     };
     socketApi.io.emit("updateHome", postIt);
   } else {
@@ -39,31 +40,35 @@ const getIo = (Post) => {
   }
 };
 router.get("/getposts", async (req, res) => {
-  console.log("@getpost");
-  post
-    .find()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
-  router.post("/getpost", async (req, res) => {
-    const { postId } = req.body;
-    console.log(`postId is ${postId}`);
-    if (postId) {
-      post
-        .findOne({
-          _id: postId,
-        })
-        .then((response) => {
-          res.send(response);
-        })
-        .catch((err) => {
-          res.send(err);
-        });
-    } else res.send("error");
-  });
+  const agreTest = post.aggregate([
+    {
+        $match:{}
+    },
+    {
+        $sort:{createdAt:-1}
+    }
+])
+agreTest.then((data) => {
+    res.send(data)
+}).catch((err)=> {
+    res.send(err)
+})
+});
+router.post("/getpost", async (req, res) => {
+  const { postId } = req.body;
+  console.log(`postId is ${postId}`);
+  if (postId) {
+    post
+      .findOne({
+        _id: postId,
+      })
+      .then((response) => {
+        res.send(response);
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+  } else res.send("error");
 });
 let postId = null;
 router.post("/", async (req, res) => {

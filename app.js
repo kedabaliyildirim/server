@@ -43,8 +43,8 @@ app.use(require('express-session')({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: false,
-    secure: true,
-    sameSite: 'none'
+    secure: false,
+    // sameSite: 'none'
   },
   store: new redisStore({
     client: redisClient
@@ -69,10 +69,12 @@ const usersRoot = require('./routes/users.js')
 const postRoot = require('./routes/post.js')
 const indexRoot = require('./routes/index.js');
 const commentRoot = require('./routes/comment.js');
+const agregationRouter = require('./routes/agregRout')
 app.use('/users', usersRoot);
 app.use('/post', postRoot);
 app.use('/', indexRoot);
 app.use('/comment', commentRoot);
+app.use('/agreg', agregationRouter)
 //VIEWS
 
 

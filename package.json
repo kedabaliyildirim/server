@@ -15,21 +15,22 @@
     "dotenv": "^8.6.0",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
-    "express-session": "^1.17.1",
+    "express-session": "^1.17.2",
+    "heroku": "^7.54.0",
     "http-errors": "^1.8.0",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.7",
+    "mongoose": "^5.12.13",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.7",
     "pug": "^3.0.2",
     "redis": "^3.1.2",
     "redis-cli": "^2.0.0",
-    "socket.io": "^4.0.2",
+    "socket.io": "^4.1.2",
     "url": "^0.11.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "eslint": "^7.26.0"
+    "eslint": "^7.28.0"
   }
 }
