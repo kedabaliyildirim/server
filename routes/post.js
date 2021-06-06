@@ -21,7 +21,6 @@ router.use(
 );
 const getIo = (Post) => {
   if (Post) {
-    console.log(`this is getIo Post ${Post.user}`);
     const postIt = {
       author: {
         name: Post.user.userName,
@@ -56,7 +55,6 @@ agreTest.then((data) => {
 });
 router.post("/getpost", async (req, res) => {
   const { postId } = req.body;
-  console.log(`postId is ${postId}`);
   if (postId) {
     post
       .findOne({
@@ -72,12 +70,9 @@ router.post("/getpost", async (req, res) => {
 });
 let postId = null;
 router.post("/", async (req, res) => {
-  console.log(req.session.isLogged);
   if (req.session.isLogged) {
     const { title, message, testStatus } = req.body;
-    console.log(`this is testStatus ${testStatus}`);
     if (testStatus) {
-        console.log('test failed');
       if (title && message) {
         const user = await User.findById(req.session.user_id);
         const Post = new post({
@@ -91,7 +86,6 @@ router.post("/", async (req, res) => {
         });
         Post.save().then((data) => {
           getIo(Post);
-          console.log(data._id);
           postId = data._id;
           User.findOneAndUpdate(
             {
@@ -117,8 +111,6 @@ router.post("/", async (req, res) => {
         res.send("validation error");
       }
       setTimeout(async () => {
-        console.log(`this is testMode delete with postId ${postId}`);
-        console.log(`this is postId ${postId}`);
         const itemId = postId;
         await post.findByIdAndDelete(itemId).then(async () => {
           await User.findOneAndUpdate(
@@ -133,7 +125,6 @@ router.post("/", async (req, res) => {
               },
             },
             (err, user) => {
-              // console.log(user);
             }
           )
             .then(() => {
@@ -203,7 +194,6 @@ router.post("/delete", async (req, res) => {
         },
       },
       (err, user) => {
-        console.log(user);
       }
     )
       .then(() => {

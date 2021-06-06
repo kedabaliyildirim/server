@@ -22,7 +22,6 @@ router.use(cors({
     }
 }))
 const getIo = ( postId, comment) => {
-    console.log(`@updatePost Socket`);
     const message = {
         postId: postId,
         body: {
@@ -52,9 +51,7 @@ router.post('/', (req, res) => {
         Comment,
         postId
     } = req.body
-    console.log(`this is comment ${Comment}`);
     if (Comment) {
-        console.log(`this is session islogged ${req.session.isLogged}`);
         const userId = req.session.user_id
         User.findOne({
             _id: userId
@@ -85,7 +82,6 @@ router.post('/deletecomment', (req, res) => {
         commentId,
         postId
     } = req.body
-    console.log(commentId);
     comment.findByIdAndDelete({
         _id: commentId
     }).then(() => {
@@ -102,6 +98,12 @@ router.post('/deletecomment', (req, res) => {
         }).catch((err) => {
             res.send(err)
         })
+    })
+})
+router.get('/test', (req,res) => {
+    const {postId} = req.body
+    post.findOne({_id: postId}, (err,data) => {
+        res.send(data)
     })
 })
 

@@ -85,7 +85,6 @@ router.post('/login', async (req, res) => {
       await req.session.save(async () => {
         req.session.isLogged = true
         req.session.user_id = currUser._id
-        console.log(`userid is ${currUser._id}`);
         await res.send(currUser._id)
       })
     } else(
@@ -104,14 +103,20 @@ router.post('/logout', (req, res) => {
   res.send('success')
 })
 router.post('/checkauth', async (req, res) => {
-  console.log(req.session.isLogged);
   if (req.session.isLogged) {
-    console.log('success');
     res.send('success')
   } else {
     console.log(`error`);
     res.send('error')
   }
 
+}),
+router.post('/doesUserExists',async (req,res) => {
+  const {userName} = req.body
+  User.countDocuments({userName:userName}, (err, count) => {
+    if(count>0) {
+      res.send(true)
+    } else res.send(false)
+  })
 })
 module.exports = router;
