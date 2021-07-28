@@ -124,7 +124,7 @@ router.post("/checkauth", async (req, res) => {
   });
 router.post("/jwtsign", async (req, res) => {
   const { payload } = req.body;
-  const decoded = jwt.decode(payload, "secret", { algorithm: "HS256" });
+  const decoded = jwt.decode(payload, process.env.JWT_SECRET, { algorithm: "HS256" });
   const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   async function verify() {
     const ticket = await client.verifyIdToken({
