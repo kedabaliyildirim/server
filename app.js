@@ -3,6 +3,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const passport = require('passport');
+
 //ENVIORMENT VERIABLES
 const dotenv = require('dotenv')
 dotenv.config({
@@ -55,7 +57,7 @@ app.use(require('express-session')({
 }))
 
 
-
+app.use(passport.initialize())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
@@ -69,12 +71,14 @@ const usersRoot = require('./routes/users.js')
 const postRoot = require('./routes/post.js')
 const indexRoot = require('./routes/index.js');
 const commentRoot = require('./routes/comment.js');
-const agregationRouter = require('./routes/agregRout')
+const agregationRouter = require('./routes/agregRout');
+const authorizationRoute = require('./routes/auth')
 app.use('/users', usersRoot);
 app.use('/post', postRoot);
 app.use('/', indexRoot);
 app.use('/comment', commentRoot);
 app.use('/agreg', agregationRouter)
+app.use('/auth', authorizationRoute)
 //VIEWS
 
 

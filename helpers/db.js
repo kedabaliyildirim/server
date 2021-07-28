@@ -7,5 +7,5 @@ mongoose.connect(process.env.DB_STRING, {
 }).then(() => {
     console.log('MONGOD HAS ARRISEN');
 }).catch((err) => {
-    console.log(err);
+    console.log(`this is database error ${err}`);
 })
