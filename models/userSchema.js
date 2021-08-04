@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const {postSchema} = require('./postSchema.js')
+const findOrCreate = require('mongoose-findorcreate')
+
 const userSchema = mongoose.Schema({
     userName: {
         type: String,
@@ -61,5 +63,6 @@ try {
 } catch (err) {
     console.log(err);
 }
+userSchema.plugin(findOrCreate)
 
 module.exports = mongoose.model('user', userSchema)

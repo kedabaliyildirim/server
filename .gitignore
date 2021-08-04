@@ -58,6 +58,7 @@ typings/
 
 # dotenv environment constiables file
 .env
+dev.js
 
 # next.js build output
 .next

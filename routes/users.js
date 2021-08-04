@@ -22,62 +22,87 @@ router.use(
   })
 );
 router.post("/register", async (req, res) => {
-  const { userName, password, email, userAge, chat, type } = req.body;
-  if (type === "test") {
-    const user = new User({
-      userName,
-      password,
-      email,
-      userAge,
-      chat,
-    });
-    let forceCheck = 0;
-    await user
-      .save()
-      .then((data) => {
-        req.session.user_id = user._id;
-        res.send(data);
-      })
-      .catch((err) => {
-        console.log(`this is an error ${err}`);
-        res.send(err);
-        forceCheck = 1;
-      })
-      .then(() => {
-        setTimeout(() => {
-          if (forceCheck === 0) {
-            User.findOneAndDelete({
-              userName: userName,
-            })
-              .then(() => console.log("deleted a user"))
-              .catch((err) => console.log(`this is register err ${err}`));
-          } else {
-            return;
+  const { token } = req.body;
+  const decoded = await jwt.decode(token, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+  });
+  if (decoded.user.type === "regularRegister") {
+    try {
+      await User.findOrCreate(
+        { userName: decoded.user.userName },
+        {
+          userName: decoded.user.userName,
+          password: decoded.user.password,
+          email: decoded.user.email,
+          userAge: decoded.user.userAge,
+          chat: decoded.user.chat,
+        },
+        (data) => {
+          console.log(JSON.stringify(data));
+          req.session.user_id = user._id;
+          res.send(user._id);
+        }
+      );
+    } catch (error) {
+      console.error(`this is regularRegister error ${error}`);
+      res.send("error");
+    }
+
+    return;
+  }
+  if (decoded.user.type === "googleRegister") {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    async function verify() {
+      const ticket = await client.verifyIdToken({
+        idToken: decoded.user.idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const newload = ticket.getPayload();
+      const userId = newload["sub"];
+    }
+    verify().then(() => {
+      try {
+        dummyUser.findOrCreate(
+          { googleId: decoded.user.googleId },
+          {
+            googleId: decoded.user.googleId,
+            user: {
+              name: decoded.user.name,
+              surname: decoded.user.surname,
+              email: decoded.user.email,
+            },
+            authentication: {
+              idToken: decoded.user.idToken,
+            },
+          },
+          (err, user) => {
+            if (err) {
+              console.log(`this is error ${err}`);
+              res.send("error");
+            }
+            console.log(`this is user id : ${user._id}`);
+            req.session.user_id = user._id;
+            console.log(`this is req.session.user_id : ${req.session.user_id}`);
+            res.send(user._id);
           }
-        }, 6000);
-      });
-  } else {
-    const user = new User({
-      userName,
-      password,
-      email,
-      userAge,
-      chat,
-    });
-    await user
-      .save()
-      .then(() => {
-        req.session.user_id = user._id;
-        res.send(user._id);
-      })
-      .catch((err) => {
-        console.log(`this is an error ${err}`);
+        );
+      } catch (error) {
+        console.error();
+        `this is googleRegister error ${error}`;
         res.send("error");
-      });
+      }
+    });
+
+    return;
   }
 });
 router.post("/login", async (req, res) => {
-  const { userName, password } = req.body;
+  const { token } = req.body;
+  const decoded =  await jwt.decode(token, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+  });
+  const userName = decoded.user.userName
+  const password = decoded.user.password
   const find = await User.findOne({
     userName,
   });
@@ -107,7 +132,8 @@ router.post("/logout", (req, res) => {
   res.send("success");
 });
 router.post("/checkauth", async (req, res) => {
-  if (req.session.isLogged) {
+  
+  if (req.session.user_id) {
     res.send("success");
   } else {
     console.log(`this is checauth error`);
@@ -124,7 +150,9 @@ router.post("/checkauth", async (req, res) => {
   });
 router.post("/jwtsign", async (req, res) => {
   const { payload } = req.body;
-  const decoded = jwt.decode(payload, process.env.JWT_SECRET, { algorithm: "HS256" });
+  const decoded = jwt.decode(payload, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+  });
   const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -153,7 +181,7 @@ router.post("/jwtsign", async (req, res) => {
         (err, user) => {
           if (err) {
             console.log(`this is error ${err}`);
-            res.send('error')
+            res.send("error");
           }
           res.send("success");
         }
