@@ -22,7 +22,8 @@ router.use(
   })
 );
 router.post("/register", async (req, res) => {
-  const { token } = req.body;
+  try {
+    const { token } = req.body;
   const decoded = await jwt.decode(token, process.env.JWT_SECRET, {
     algorithm: "HS256",
   });
@@ -95,50 +96,53 @@ router.post("/register", async (req, res) => {
 
     return;
   }
+  } catch (error) {
+    console.log(error);
+    res.send('error')
+  }
+  
 });
 router.post("/login", async (req, res) => {
   try {
     const { token } = req.body;
-  const decoded =  await jwt.decode(token, process.env.JWT_SECRET, {
-    algorithm: "HS256",
-  });
-  console.log(`this is decoded everything : ${decoded.user.everyhing}`);
-  const userName = decoded.user.userName
-  const password = decoded.user.password
-  const find = await User.findOne({
-    userName,
-  });
-  const currUser = await find;
-  await bcrypt
-    .compare(password, currUser.password)
-    .then(async (data) => {
-      if (data) {
-        await req.session.save(async () => {
-          req.session.isLogged = true;
-          req.session.user_id = currUser._id;
-          await res.send(currUser._id);
-        });
-      } else
-        await req.session.save(() => {
-          req.session.isLogged = false;
-        });
-    })
-    .catch((err) => {
-      console.log(`login error ${err}`);
-      res.send("error");
-      console.log(`this is login err : ${err}`);
+    const decoded = await jwt.decode(token, process.env.JWT_SECRET, {
+      algorithm: "HS256",
     });
+   
+    const userName = decoded.user.userName;
+    const password = decoded.user.password;
+    const find = await User.findOne({
+      userName,
+    });
+    const currUser = await find;
+    await bcrypt
+      .compare(password, currUser.password)
+      .then(async (data) => {
+        if (data) {
+          await req.session.save(async () => {
+            req.session.isLogged = true;
+            req.session.user_id = currUser._id;
+            await res.send(currUser._id);
+          });
+        } else
+          await req.session.save(() => {
+            req.session.isLogged = false;
+          });
+      })
+      .catch((err) => {
+        console.log(`login error ${err}`);
+        res.send("error");
+        console.log(`this is login err : ${err}`);
+      });
   } catch (error) {
     console.log(error);
   }
-  
 });
 router.post("/logout", (req, res) => {
   req.session.destroy();
   res.send("success");
 });
 router.post("/checkauth", async (req, res) => {
-  
   if (req.session.user_id) {
     res.send("success");
   } else {
