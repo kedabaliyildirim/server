@@ -81,17 +81,17 @@ router.post("/register", async (req, res) => {
               if (err) {
                 console.log(`this is error ${err}`);
                 res.send("error");
+                return
               }
               console.log(`this is user id : ${user._id}`);
               req.session.user_id = user._id;
               console.log(`this is req.session.user_id : ${req.session.user_id}`);
-              res.send(user._id);
             }
           );
         } catch (error) {
-          console.error();
-          `this is googleRegister error ${error}`;
-          res.send("error");
+          console.error(`this is googleRegister error ${error}`);
+          
+          
         }
       });
   
@@ -99,7 +99,6 @@ router.post("/register", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.send('error')
     
   }
   
