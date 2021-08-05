@@ -22,8 +22,7 @@ router.use(
   })
 );
 router.post("/register", async (req, res) => {
-  try {
-    const { token } = req.body;
+  const { token } = req.body;
   const decoded = await jwt.decode(token, process.env.JWT_SECRET, {
     algorithm: "HS256",
   });
@@ -51,98 +50,97 @@ router.post("/register", async (req, res) => {
 
     return;
   }
-  if (decoded.user.type === "googleRegister") {
-    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    async function verify() {
-      const ticket = await client.verifyIdToken({
-        idToken: decoded.user.idToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      const newload = ticket.getPayload();
-      const userId = newload["sub"];
-    }
-    verify().then(() => {
-      try {
-        dummyUser.findOrCreate(
-          { googleId: decoded.user.googleId },
-          {
-            googleId: decoded.user.googleId,
-            user: {
-              name: decoded.user.name,
-              surname: decoded.user.surname,
-              email: decoded.user.email,
-            },
-            authentication: {
-              idToken: decoded.user.idToken,
-            },
-          },
-          (err, user) => {
-            if (err) {
-              console.log(`this is error ${err}`);
-              res.send("error");
-            }
-            console.log(`this is user id : ${user._id}`);
-            req.session.user_id = user._id;
-            console.log(`this is req.session.user_id : ${req.session.user_id}`);
-            res.send(user._id);
-          }
-        );
-      } catch (error) {
-        console.error();
-        `this is googleRegister error ${error}`;
-        res.send("error");
+  try {
+    if (decoded.user.type === "googleRegister") {
+      console.log(`this is decoded everything ${decoded.user.everything}`);
+      const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+      async function verify() {
+        const ticket = await client.verifyIdToken({
+          idToken: decoded.user.idToken,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const newload = ticket.getPayload();
+        const userId = newload["sub"];
       }
-    });
-
-    return;
-  }
+      verify().then(() => {
+        try {
+          dummyUser.findOrCreate(
+            { googleId: decoded.user.googleId },
+            {
+              googleId: decoded.user.googleId,
+              user: {
+                name: decoded.user.name,
+                surname: decoded.user.surname,
+                email: decoded.user.email,
+              },
+              authentication: {
+                idToken: decoded.user.idToken,
+              },
+            },
+            (err, user) => {
+              if (err) {
+                console.log(`this is error ${err}`);
+                res.send("error");
+              }
+              console.log(`this is user id : ${user._id}`);
+              req.session.user_id = user._id;
+              console.log(`this is req.session.user_id : ${req.session.user_id}`);
+              res.send(user._id);
+            }
+          );
+        } catch (error) {
+          console.error();
+          `this is googleRegister error ${error}`;
+          res.send("error");
+        }
+      });
+  
+      return;
+    }
   } catch (error) {
     console.log(error);
     res.send('error')
+    
   }
   
 });
 router.post("/login", async (req, res) => {
-  try {
-    const { token } = req.body;
-    const decoded = await jwt.decode(token, process.env.JWT_SECRET, {
-      algorithm: "HS256",
+  const { token } = req.body;
+  const decoded =  await jwt.decode(token, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+  });
+  const userName = decoded.user.userName
+  const password = decoded.user.password
+  const find = await User.findOne({
+    userName,
+  });
+  const currUser = await find;
+  await bcrypt
+    .compare(password, currUser.password)
+    .then(async (data) => {
+      if (data) {
+        await req.session.save(async () => {
+          req.session.isLogged = true;
+          req.session.user_id = currUser._id;
+          await res.send(currUser._id);
+        });
+      } else
+        await req.session.save(() => {
+          req.session.isLogged = false;
+        });
+    })
+    .catch((err) => {
+      console.log(`login error ${err}`);
+      res.send("error");
+      console.log(`this is login err : ${err}`);
     });
-   
-    const userName = decoded.user.userName;
-    const password = decoded.user.password;
-    const find = await User.findOne({
-      userName,
-    });
-    const currUser = await find;
-    await bcrypt
-      .compare(password, currUser.password)
-      .then(async (data) => {
-        if (data) {
-          await req.session.save(async () => {
-            req.session.isLogged = true;
-            req.session.user_id = currUser._id;
-            await res.send(currUser._id);
-          });
-        } else
-          await req.session.save(() => {
-            req.session.isLogged = false;
-          });
-      })
-      .catch((err) => {
-        console.log(`login error ${err}`);
-        res.send("error");
-        console.log(`this is login err : ${err}`);
-      });
-  } catch (error) {
-    console.log(error);
-  }
 });
 router.post("/logout", (req, res) => {
   req.session.destroy();
   res.send("success");
 });
 router.post("/checkauth", async (req, res) => {
+  
   if (req.session.user_id) {
     res.send("success");
   } else {
