@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
   try {
     if (decoded.user.type === "googleRegister") {
       console.log(`@googleRegister`);
-      console.log(`this is decoded everything ${JSON.stringify(decoded.user)}`);
+      console.log(`this is decoded everything ${JSON.stringify(decoded.user.everything)}`);
       const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
       async function verify() {
         const ticket = await client.verifyIdToken({
