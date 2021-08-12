@@ -39,6 +39,7 @@ router.post("/register", async (req, res) => {
         },
         (data) => {
           console.log(JSON.stringify(data));
+          req.session.user_type='regular'
           req.session.user_id = user._id;
           res.send(user._id);
         }
@@ -50,10 +51,12 @@ router.post("/register", async (req, res) => {
 
     return;
   }
-  try {
-    if (decoded.user.type === "googleRegister") {
-      console.log(`@googleRegister`);
-      console.log(`this is decoded everything ${JSON.stringify(decoded.user.everything)}`);
+  if (decoded.user.type === "googleRegister") {
+    try {
+      let userName = decoded.user.name + decoded.user.surname
+      if(dummyUser.exists({userName:userName})) {
+        userName = userName + Math.floor(Math.random() * 10000)
+      }
       const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
       async function verify() {
         const ticket = await client.verifyIdToken({
@@ -61,56 +64,48 @@ router.post("/register", async (req, res) => {
           audience: process.env.GOOGLE_CLIENT_ID,
         });
         const newload = ticket.getPayload();
-        const userId = newload["sub"];
       }
       verify().then(() => {
-        try {
-          dummyUser.findOrCreate(
-            { googleId: decoded.user.googleId },
-            {
-              googleId: decoded.user.googleId,
-              user: {
-                name: decoded.user.name,
-                surname: decoded.user.surname,
-                email: decoded.user.email,
-              },
-              authentication: {
-                idToken: decoded.user.idToken,
-              },
+        dummyUser.findOrCreate(
+          { googleId: decoded.user.googleId },
+          {
+            googleId: decoded.user.googleId,
+            userName: decoded.user.name + ' ' + decoded.user.surname,
+            user: {
+              name: decoded.user.name,
+              surname: decoded.user.surname,
+              email: decoded.user.email,
             },
-            (err, user) => {
-              if (err) {
-                console.log(`this is error ${err}`);
-                res.send("error");
-                return
-              }
-              console.log(`this is user id : ${user._id}`);
-              req.session.user_id = user._id;
-              console.log(`this is req.session.user_id : ${req.session.user_id}`);
+            authentication: {
+              idToken: decoded.user.idToken,
+            },
+          },
+          (err, user) => {
+            if (err) {
+              console.log(`this is error ${err}`);
+              return;
             }
-          );
-        } catch (error) {
-          console.error(`this is googleRegister error ${error}`);
-          
-          
-        }
+            req.session.user_type = 'google'
+            req.session.user_id = user._id;
+            res.send(user._id);
+          }
+        );
       });
-  
+
       return;
+    } catch (error) {
+      console.log(error);
+      res.send('error')
     }
-  } catch (error) {
-    console.log(error);
-    
   }
-  
 });
 router.post("/login", async (req, res) => {
   const { token } = req.body;
-  const decoded =  await jwt.decode(token, process.env.JWT_SECRET, {
+  const decoded = await jwt.decode(token, process.env.JWT_SECRET, {
     algorithm: "HS256",
   });
-  const userName = decoded.user.userName
-  const password = decoded.user.password
+  const userName = decoded.user.userName;
+  const password = decoded.user.password;
   const find = await User.findOne({
     userName,
   });
@@ -140,7 +135,6 @@ router.post("/logout", (req, res) => {
   res.send("success");
 });
 router.post("/checkauth", async (req, res) => {
-  
   if (req.session.user_id) {
     res.send("success");
   } else {

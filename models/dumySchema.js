@@ -8,6 +8,11 @@ const dummySchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  userName: {
+    type:String,
+    required:true,
+    unique:true
+  },
   user: {
     name: {
       type: String,
@@ -32,6 +37,7 @@ const dummySchema = mongoose.Schema({
       unique: true,
     },
   },
+  child: [postSchema]
 });
 dummySchema.plugin(findOrCreate);
 module.exports = mongoose.model("dummy", dummySchema);

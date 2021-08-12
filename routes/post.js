@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/userSchema.js");
+const dummyUser = require("../models/dumySchema.js");
 const socketApi = require("../helpers/socket");
 const { post } = require("../models/postSchema.js");
 const cors = require("cors");
@@ -26,11 +27,11 @@ const getIo = (Post) => {
         name: Post.user.userName,
       },
       body: {
-          title:Post.body.title,
-          message:Post.body.message
+        title: Post.body.title,
+        message: Post.body.message,
       },
       _id: Post._id,
-      date:Post.createdAt
+      date: Post.createdAt,
     };
     socketApi.io.emit("updateHome", postIt);
   } else {
@@ -41,17 +42,19 @@ const getIo = (Post) => {
 router.get("/getposts", async (req, res) => {
   const agreTest = post.aggregate([
     {
-        $match:{}
+      $match: {},
     },
     {
-        $sort:{createdAt:-1}
-    }
-])
-agreTest.then((data) => {
-    res.send(data)
-}).catch((err)=> {
-    res.send(err)
-})
+      $sort: { createdAt: -1 },
+    },
+  ]);
+  agreTest
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
 });
 router.post("/getpost", async (req, res) => {
   const { postId } = req.body;
@@ -70,109 +73,18 @@ router.post("/getpost", async (req, res) => {
 });
 let postId = null;
 router.post("/", async (req, res) => {
-  if (req.session.isLogged) {
-    const { title, message, testStatus } = req.body;
-    if (testStatus) {
-      if (title && message) {
+  if (req.session.user_id) {
+    const { title, message} = req.body;
+    if (title && message) {
+      if (req.session.user_type === 'regular') {
         const user = await User.findById(req.session.user_id);
-        const Post = new post({
-          user: {
-            userName: user.userName,
-          },
-          body: {
-            title,
-            message,
-          },
-        });
-        Post.save().then((data) => {
-          getIo(Post);
-          postId = data._id;
-          User.findOneAndUpdate(
-            {
-              _id: req.session.user_id,
-            },
-            {
-              $addToSet: {
-                child: Post,
-              },
-            },
-            {
-              new: true,
-            },
-            (err) => {
-              if (err) {
-                console.log(err);
-              }
-            }
-          ).then(() => {});
-          res.send(data);
-        });
-      } else {
-        res.send("validation error");
+        postFunction(User, user, title, message, req, res);
+      } else if (req.session.user_type === 'google') {
+        const user = await dummyUser.findById(req.session.user_id);
+        postFunction(dummyUser, user, title, message, req, res);
       }
-      setTimeout(async () => {
-        const itemId = postId;
-        await post.findByIdAndDelete(itemId).then(async () => {
-          await User.findOneAndUpdate(
-            {
-              _id: req.session.user_id,
-            },
-            {
-              $pull: {
-                child: {
-                  _id: itemId,
-                },
-              },
-            },
-            (err, user) => {
-            }
-          )
-            .then(() => {
-              getIo();
-              console.log("deleted");
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
-      }, 9000);
     } else {
-      if (title && message) {
-        const user = await User.findById(req.session.user_id);
-        const Post = new post({
-          user: {
-            userName: user.userName,
-          },
-          body: {
-            title,
-            message,
-          },
-        });
-        Post.save().then((data) => {
-          getIo();
-          User.findOneAndUpdate(
-            {
-              _id: req.session.user_id,
-            },
-            {
-              $addToSet: {
-                child: Post,
-              },
-            },
-            {
-              new: true,
-            },
-            (err) => {
-              if (err) {
-                console.log(err);
-              }
-            }
-          ).then(() => {});
-          res.send(data);
-        });
-      } else {
-        res.send("validation error");
-      }
+      res.send("validation error");
     }
   } else {
     res.send("loginerror");
@@ -193,8 +105,7 @@ router.post("/delete", async (req, res) => {
           },
         },
       },
-      (err, user) => {
-      }
+      (err, user) => {}
     )
       .then(() => {
         getIo();
@@ -233,3 +144,38 @@ router.post("/deleteall", async (req, res) => {
     });
 });
 module.exports = router;
+function postFunction(userType, user, title, message, req, res) {
+  const Post = new post({
+    user: {
+      userName: user.userName,
+    },
+    body: {
+      title,
+      message,
+    },
+  });
+  Post.save().then((data) => {
+    getIo();
+    userType
+      .findOneAndUpdate(
+        {
+          _id: req.session.user_id,
+        },
+        {
+          $addToSet: {
+            child: Post,
+          },
+        },
+        {
+          new: true,
+        },
+        (err) => {
+          if (err) {
+            console.log(err);
+          }
+        }
+      )
+      .then(() => {});
+    res.send(data);
+  });
+}
