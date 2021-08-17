@@ -5,19 +5,11 @@ const dummyUser = require("../models/dumySchema.js");
 const User = require("../models/userSchema");
 const cors = require("cors");
 const socketApi = require("../helpers/socket");
-const localUrl = "http://localhost:8080";
-const url = "https://vue-test-47cc0.web.app";
-const corsUrl = "https://stormy-mountain-28848.herokuapp.com";
-const netifyUrl = "https://stoic-turing-035110.netlify.app";
+const corsList = require('../helpers/CORSHelper.js');
 router.use(
   cors({
     credentials: true,
-    origin: {
-      url,
-      localUrl,
-      corsUrl,
-      netifyUrl,
-    },
+    origin: corsList,
   })
 );
 const getIo = (postId, comment) => {
@@ -47,20 +39,19 @@ router.post("/getcomments", (req, res) => {
   } else res.send("body_error");
 });
 router.post("/", (req, res) => {
-    try {
-        const { Comment, postId } = req.body;
-  if (Comment) {
-    const userId = req.session.user_id;
-    if (req.session.user_type === "regular") {
-      commentFunction(User, userId, Comment, postId, res);
-    } else if ((req.session.user_type === "google")) {
-      commentFunction(dummyUser, userId, Comment, postId, res);
-    }
-  } else res.send("error");
-    } catch (error) {
-        console.log(error);
-    }
-  
+  try {
+    const { Comment, postId } = req.body;
+    if (Comment) {
+      const userId = req.session.user_id;
+      if (req.session.user_type === "regular") {
+        commentFunction(User, userId, Comment, postId, res);
+      } else if (req.session.user_type === "google") {
+        commentFunction(dummyUser, userId, Comment, postId, res);
+      }
+    } else res.send("error");
+  } catch (error) {
+    console.log(error);
+  }
 });
 router.post("/deletecomment", (req, res) => {
   const { commentId, postId } = req.body;

@@ -3,15 +3,15 @@ const bcrypt = require("bcrypt");
 const { postSchema } = require("./postSchema.js");
 const findOrCreate = require("mongoose-findorcreate");
 const dummySchema = mongoose.Schema({
-  googleId: {
+  userId: {
     type: String,
     required: true,
     unique: true,
   },
   userName: {
-    type:String,
-    required:true,
-    unique:true
+    type: String,
+    required: true,
+    unique: true,
   },
   user: {
     name: {
@@ -26,7 +26,7 @@ const dummySchema = mongoose.Schema({
     },
     email: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
     },
   },
@@ -37,7 +37,7 @@ const dummySchema = mongoose.Schema({
       unique: true,
     },
   },
-  child: [postSchema]
+  child: [postSchema],
 });
 dummySchema.plugin(findOrCreate);
 module.exports = mongoose.model("dummy", dummySchema);

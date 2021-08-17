@@ -5,19 +5,12 @@ const dummyUser = require("../models/dumySchema.js");
 const socketApi = require("../helpers/socket");
 const { post } = require("../models/postSchema.js");
 const cors = require("cors");
-const localUrl = "http://localhost:8080";
-const url = "https://vue-test-47cc0.web.app";
-const corsUrl = "https://stormy-mountain-28848.herokuapp.com";
-const netifyUrl = "https://stoic-turing-035110.netlify.app";
+const corsList = require("../helpers/CORSHelper.js");
+
 router.use(
   cors({
     credentials: true,
-    origin: {
-      url,
-      localUrl,
-      corsUrl,
-      netifyUrl,
-    },
+    origin: corsList,
   })
 );
 const getIo = (Post) => {
@@ -74,12 +67,15 @@ router.post("/getpost", async (req, res) => {
 let postId = null;
 router.post("/", async (req, res) => {
   if (req.session.user_id) {
-    const { title, message} = req.body;
+    const { title, message } = req.body;
     if (title && message) {
-      if (req.session.user_type === 'regular') {
+      if (req.session.user_type === "regular") {
         const user = await User.findById(req.session.user_id);
         postFunction(User, user, title, message, req, res);
-      } else if (req.session.user_type === 'google') {
+      } else if (req.session.user_type === "google") {
+        const user = await dummyUser.findById(req.session.user_id);
+        postFunction(dummyUser, user, title, message, req, res);
+      } else if (req.session.user_type === "facebook") {
         const user = await dummyUser.findById(req.session.user_id);
         postFunction(dummyUser, user, title, message, req, res);
       }
