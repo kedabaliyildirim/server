@@ -5,7 +5,7 @@ const dummyUser = require("../models/dumySchema.js");
 const User = require("../models/userSchema");
 const cors = require("cors");
 const socketApi = require("../helpers/socket");
-const corsList = require('../helpers/CORSHelper.js');
+const corsList = require("../helpers/CORSHelper.js");
 router.use(
   cors({
     credentials: true,
@@ -46,6 +46,8 @@ router.post("/", (req, res) => {
       if (req.session.user_type === "regular") {
         commentFunction(User, userId, Comment, postId, res);
       } else if (req.session.user_type === "google") {
+        commentFunction(dummyUser, userId, Comment, postId, res);
+      } else if (req.session.user_type === "facebook") {
         commentFunction(dummyUser, userId, Comment, postId, res);
       }
     } else res.send("error");

@@ -169,7 +169,7 @@ router.post("/login", async (req, res) => {
 });
 router.post("/logout", (req, res) => {
   if(req.session.user_type ==='facebook') {
-    socketApi.io.emit('facebookLogOut')
+    socketApi.io.emit('facebookLogOut ')
   }
   req.session.destroy();
   res.send("success");
