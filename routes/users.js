@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const axios = require('axios')
+const axios = require("axios");
 const User = require("../models/userSchema.js");
 const dummyUser = require("../models/dumySchema.js");
 const jwt = require("jsonwebtoken");
@@ -31,6 +31,7 @@ router.post("/register", async (req, res) => {
           userAge: decoded.user.userAge,
           chat: decoded.user.chat,
         },
+        { upsert: true },
         (data) => {
           console.log(JSON.stringify(data));
           req.session.user_type = "regular";
@@ -60,7 +61,9 @@ router.post("/register", async (req, res) => {
         const newload = ticket.getPayload();
       }
       verify().then(() => {
-        console.log(`this is google id : :${decoded.user.googleId}`);
+        console.log(
+          `this is userName : ${decoded.user.name + " " + decoded.user.surname}`
+        );
         dummyUser.findOrCreate(
           { userId: decoded.user.googleId },
           {
@@ -75,6 +78,7 @@ router.post("/register", async (req, res) => {
               idToken: decoded.user.idToken,
             },
           },
+          { upsert: true },
           (err, user) => {
             if (err) {
               console.log(`this is error ${err}`);
@@ -93,46 +97,46 @@ router.post("/register", async (req, res) => {
       res.send("error");
     }
   }
-  if (decoded.user.type ==='facebookRegister') {
+  if (decoded.user.type === "facebookRegister") {
     try {
-      let userName = decoded.user.name + decoded.user.surname
+      let userName = decoded.user.name + decoded.user.surname;
       if (dummyUser.exists({ userName: userName })) {
         userName = userName + Math.floor(Math.random() * 10000);
       }
-      axios.get(process.env.FACEBOOK_GRAPHAPI_URL+decoded.user.idToken).then((response) => {
-        if(response.message === 'Invalid OAuth access token') {
-          res.send('error')
-          return;
-        } 
-        dummyUser.findOrCreate(
-          { userId: decoded.user.facebookId },
-          {
-            userId: decoded.user.facebookId,
-            userName: decoded.user.name + " " + decoded.user.surname,
-            user: {
-              name: decoded.user.name,
-              surname: decoded.user.surname,
-              email: decoded.user.email,
-            },
-            authentication: {
-              idToken: decoded.user.idToken,
-            },
-          },
-          (err, user) => {
-            if (err) {
-              console.log(`this is error ${err}`);
-              return;
-            }
-            req.session.user_type = "facebook";
-            req.session.user_id = user._id;
-            res.send(user._id);
+      axios
+        .get(process.env.FACEBOOK_GRAPHAPI_URL + decoded.user.idToken)
+        .then((response) => {
+          if (response.message === "Invalid OAuth access token") {
+            res.send("error");
+            return;
           }
-        );
-      })
-
-    } catch (error) {
-      
-    }
+          dummyUser.findOrCreate(
+            { userId: decoded.user.facebookId },
+            {
+              userId: decoded.user.facebookId,
+              userName: decoded.user.name + " " + decoded.user.surname,
+              user: {
+                name: decoded.user.name,
+                surname: decoded.user.surname,
+                email: decoded.user.email,
+              },
+              authentication: {
+                idToken: decoded.user.idToken,
+              },
+            },
+            { upsert: true },
+            (err, user) => {
+              if (err) {
+                console.log(`this is error ${err}`);
+                return;
+              }
+              req.session.user_type = "facebook";
+              req.session.user_id = user._id;
+              res.send(user._id);
+            }
+          );
+        });
+    } catch (error) {}
   }
 });
 router.post("/login", async (req, res) => {
@@ -152,7 +156,7 @@ router.post("/login", async (req, res) => {
       if (data) {
         await req.session.save(async () => {
           req.session.isLogged = true;
-          req.session.user_type = 'regular'
+          req.session.user_type = "regular";
           req.session.user_id = currUser._id;
           await res.send(currUser._id);
         });
@@ -168,8 +172,8 @@ router.post("/login", async (req, res) => {
     });
 });
 router.post("/logout", (req, res) => {
-  if(req.session.user_type ==='facebook') {
-    socketApi.io.emit('facebookLogOut ')
+  if (req.session.user_type === "facebook") {
+    socketApi.io.emit("facebookLogOut ");
   }
   req.session.destroy();
   res.send("success");
