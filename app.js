@@ -4,6 +4,9 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const passport = require("passport");
+const dotenv = require('dotenv');
+dotenv.config()
+
 
 //ENVIORMENT VERIABLES
 
@@ -26,6 +29,7 @@ const app = require("express")();
 //DATABASE
 // eslint-disable-next-line no-unused-vars
 const dataBase = require("./helpers/db.js");
+// esLint-disable-next-line no-unused-vars
 const corsList = require("./helpers/CORSHelper.js");
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
