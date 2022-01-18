@@ -111,7 +111,7 @@ router.post("/register", async (req, res) => {
             return;
           }
           dummyUser.findOrCreate(
-            { userId: decoded.user.facebookId },
+            { userId: decoded.user.facebookId, email:decoded.user.email },
             {
               userId: decoded.user.facebookId,
               userName: decoded.user.name + " " + decoded.user.surname,
