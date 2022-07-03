@@ -1,7 +1,30 @@
-const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
-const {postSchema} = require('./postSchema.js')
-const findOrCreate = require('mongoose-findorcreate')
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const { postSchema } = require('./postSchema.js');
+const findOrCreate = require('mongoose-findorcreate');
+
+const adminSchema = new mongoose.Schema({
+    userTyoe: {
+        type: String,
+        enum: ['admin', 'adminRegister'],
+        default: 'adminRegister'
+    },
+    userName: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+});
+
 
 const userSchema = mongoose.Schema({
     userName: {
@@ -9,7 +32,7 @@ const userSchema = mongoose.Schema({
         required: [true, 'User Name Cannot Be Empty'],
         unique: false,
         minLength: 5,
-        maxLength:18
+        maxLength: 18
     },
     password: {
         type: String,
@@ -39,30 +62,30 @@ const userSchema = mongoose.Schema({
         }
     },
     child: [postSchema]
-})
+});
 userSchema.statics.authUser = async function (userName, password) {
     const findUser = await this.findOne({
         userName
-    })
+    });
     if (findUser) {
-        const authourise = await bcrypt.compare(password, findUser.password)
-        return authourise ? findUser : false
+        const authourise = await bcrypt.compare(password, findUser.password);
+        return authourise ? findUser : false;
     } else {
-        return false
+        return false;
     }
 
-}
+};
 try {
     userSchema.pre('save', async function (next) {
         if (!this.isModified('password')) {
-            return next()
+            return next();
         }
-        this.password = await bcrypt.hash(this.password, 12)
-        next()
-    })
+        this.password = await bcrypt.hash(this.password, 12);
+        next();
+    });
 } catch (err) {
     console.log(err);
 }
-userSchema.plugin(findOrCreate)
+userSchema.plugin(findOrCreate);
 
-module.exports = mongoose.model('user', userSchema)
+module.exports = mongoose.model('User', userSchema, 'adminUser', adminSchema );

@@ -1,1 +1,1 @@
-redis-commander --redis-port 12113 --redis-host redis-12113.c56.east-us.azure.cloud.redislabs.com --redis-password w6dcHGpO0h413uI1BsRbuOs4veXEhVrk
+redis-commander --redis-port 18745 --redis-host redis-18745.c56.east-us.azure.cloud.redislabs.com --redis-password d5VY0AhdUpcfcfVNJTljk8APn5Lk6fVX

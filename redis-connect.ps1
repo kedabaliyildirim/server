@@ -1,1 +1,1 @@
-redis-cli -h redis-12113.c56.east-us.azure.cloud.redislabs.com -p 12113 -a w6dcHGpO0h413uI1BsRbuOs4veXEhVrk
+redis-cli -h redis-18745.c56.east-us.azure.cloud.redislabs.com -p 18745 -a d5VY0AhdUpcfcfVNJTljk8APn5Lk6fVX

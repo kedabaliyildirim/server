@@ -5,26 +5,32 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const passport = require("passport");
 const dotenv = require('dotenv');
-dotenv.config()
+const redis = require('redis');
+dotenv.config();
 
 
 //ENVIORMENT VERIABLES
 
 //LOGIN AUTHENTICATION FUNCTION
 //SESSION
-const redis = require("redis");
-const session = require("express-session");
-let redisStore = require("connect-redis")(session);
-let redisClient;
-if (process.env.REDISCLOUD_URL) {
-  redisClient = redis.createClient({
+const session = require('express-session')
+//redis connection
+async function redisConnect() {
+
+  const client = redis.createClient({
     port: process.env.REDIS_PORT,
     host: process.env.REDISCLOUD_URL,
     password: process.env.REDIS_PASSWORD,
   });
-} else {
-  redisClient = redis.createClient;
+
+  client.on('error', (err) => console.log('Redis Client Error', err));
+
+  await client.connect();
+
+  await client.set('key', 'value');
+  const value = await client.get('key');
 }
+redisConnect();
 const app = require("express")();
 //DATABASE
 // eslint-disable-next-line no-unused-vars
@@ -47,12 +53,9 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: false,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      // sameSite: "none",
     },
-    store: new redisStore({
-      client: redisClient,
-    }),
     proxy: true,
     resave: true,
     saveUninitialized: true,
