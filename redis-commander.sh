@@ -1,1 +1,0 @@
-redis-commander --redis-port 19779 --redis-host redis-19779.c240.us-east-1-3.ec2.cloud.redislabs.com --redis-password dmRIsNB0doGS9n3I6fYHysZC6C9EV0rM
