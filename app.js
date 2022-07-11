@@ -20,7 +20,7 @@ async function redisConnect() {
   const client = redis.createClient({
     port: process.env.REDIS_PORT,
     host: process.env.REDISCLOUD_URL,
-    password: process.env.REDIS_PASSWORD,
+    // password: process.env.REDIS_PASSWORD,
   });
 
   client.on('error', (err) => console.log('Redis Client Error', err));

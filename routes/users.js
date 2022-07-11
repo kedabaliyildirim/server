@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const {
-  User,
-  adminUser
-} = require("../models/userSchema.js");
+const User = require("../models/userSchema.js");
 const dummyUser = require("../models/dumySchema.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
